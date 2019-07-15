@@ -1,8 +1,9 @@
 package ecosystem;
 
 import ecosystem.util.Unique;
+import java.io.Serializable;
 
-class MetaEntry extends Unique {
+class MetaEntry extends Unique implements Serializable {
     private Object value;
 
     public MetaEntry(String key, Object value) {

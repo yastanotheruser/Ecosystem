@@ -45,7 +45,7 @@ public class EcosystemFrame extends JFrame {
     }
 
     private void initComponents() {
-        container = this.getContentPane();
+        container = this.getLayeredPane();
         buttonMinimize = new ESButton();
         buttonClose = new ESButton();
 

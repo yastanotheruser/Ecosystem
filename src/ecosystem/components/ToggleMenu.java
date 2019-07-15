@@ -6,14 +6,18 @@ import java.util.ArrayList;
 import javax.swing.JPanel;
 
 public class ToggleMenu {
-    private TogglePanel[] menu;
-    private JPanel[] views;
-    private ArrayList<MenuListener> listeners;
+    private final TogglePanel[] menu;
+    private final JPanel[] views;
+    private final ArrayList<MenuListener>[] listeners;
 
     public ToggleMenu(TogglePanel[] menu, JPanel[] views) {
         this.menu = menu;
         this.views = views;
-        listeners = new ArrayList<>();
+        listeners = new ArrayList[menu.length];
+
+        for (int i = 0; i < menu.length; i++)
+            listeners[i] = new ArrayList<>();
+
         initMenu();
     }
 
@@ -26,7 +30,7 @@ public class ToggleMenu {
 
             int index = toggleMenuItem(self);
             if (index != -1)
-                listeners.forEach(l -> l.selectOption(self, index));
+                listeners[index].forEach(l -> l.selectOption(self, index));
         }
     };
 
@@ -102,10 +106,30 @@ public class ToggleMenu {
     }
 
     public void addMenuListener(MenuListener listener) {
-        this.listeners.add(listener);
+        for (ArrayList l : this.listeners)
+            l.add(listener);
+    }
+
+    public void addMenuListener(int index, MenuListener listener) {
+        this.listeners[index].add(listener);
+    }
+
+    public void addMenuListener(int[] indices, MenuListener listener) {
+        for (int i : indices)
+            this.listeners[i].add(listener);
     }
 
     public void removeMenuListener(MenuListener listener) {
-        this.listeners.remove(listener);
+        for (ArrayList l : this.listeners)
+            l.remove(listener);
+    }
+
+    public void removeMenuListener(int index, MenuListener listener) {
+        this.listeners[index].remove(listener);
+    }
+
+    public void removeMenuListener(int[] indices, MenuListener listener) {
+        for (int i : indices)
+            this.listeners[i].remove(listener);
     }
 }

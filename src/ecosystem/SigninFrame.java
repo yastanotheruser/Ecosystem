@@ -1,11 +1,14 @@
 package ecosystem;
 
 import static ecosystem.Ecosystem.userManager;
+import static ecosystem.Ecosystem.meta;
 import ecosystem.user.User;
 import ecosystem.user.UserType;
 import ecosystem.components.EcosystemFrame;
+import static ecosystem.mailing.SimpleMailApp.emailManager;
 import ecosystem.user.Applicant;
 import ecosystem.user.LoginResult;
+import ecosystem.user.Student;
 import ecosystem.util.FormValidator;
 import ecosystem.util.RegexValidator;
 import java.awt.Color;
@@ -14,14 +17,16 @@ import javax.swing.JTextField;
 import javax.swing.text.JTextComponent;
 
 public class SigninFrame extends EcosystemFrame {
-    private JTextComponent[] fields = null;
-    private FormValidator validator = null;
+    private JTextComponent[] fields;
+    private FormValidator signupValidator;
+    private FormValidator forgotPwdValidator;
 
     public SigninFrame() {
         super(910, 620);
         initComponents();
         initValidationData();
         jPanelSignup.setVisible(false);
+        jPanelForgotPwd.setVisible(false);
         setVisible(true);
     }
 
@@ -48,19 +53,68 @@ public class SigninFrame extends EcosystemFrame {
             field.putClientProperty("required", true);
         }
 
-        validator = new FormValidator(fields, new Color(61, 66, 72), new Color(122, 66, 72), jButtonSignup);
+        Color c1 = new Color(61, 66, 72), c2 = new Color(122, 66, 72);
+        signupValidator = new FormValidator(fields, c1, c2, jButtonSignup);
+
+        jTextFieldRenewalEmail.putClientProperty("validator", RegexValidator.EMAIL_VALIDATOR);
+        jTextFieldRenewalEmail.putClientProperty("required", true);
+        forgotPwdValidator = new FormValidator(new JTextComponent[] { jTextFieldRenewalEmail }, c1, c2, jButtonRequest);
     }
 
     private void showSignupPanel() {
-        jLabelTrademark.setVisible(false);
-        jLabelProduct.setVisible(false);
         jPanelSignup.setVisible(true);
+        jPanelForgotPwd.setVisible(false);
+        jPanelTrademark.setVisible(false);
+        repaint();
     }
 
-    private void hideSignupPanel() {
+    private void showTrademarkPanel() {
         jPanelSignup.setVisible(false);
-        jLabelTrademark.setVisible(true);
-        jLabelProduct.setVisible(true);
+        jPanelForgotPwd.setVisible(false);
+        jPanelTrademark.setVisible(true);
+        repaint();
+    }
+
+    private void showForgotPasswordPanel() {
+        jPanelSignup.setVisible(false);
+        jPanelForgotPwd.setVisible(true);
+        jPanelTrademark.setVisible(false);
+        repaint();
+    }
+
+    private void requestPasswordRenewal(String email) {
+        User user = null;
+        for (User u : userManager.list) {
+            if (u instanceof Student) {
+                Student s = (Student) u;
+                if (!s.getEmail().equalsIgnoreCase(email))
+                    continue;
+
+                user = s;
+            } else if (u instanceof Applicant) {
+                Applicant a = (Applicant) u;
+                if (!a.email.equalsIgnoreCase(email))
+                    continue;
+
+                user = a;
+            }
+
+            if (user != null)
+                break;
+        }
+
+        if (user == null) {
+            JOptionPane.showMessageDialog(null, "El usuario no se encuentra registrado", "Error", JOptionPane.ERROR_MESSAGE);
+            return;
+        }
+
+        String newPassword = User.generatePassword();
+        user.unsafeChangePassword(newPassword);
+        userManager.update();
+        emailManager.send("noresponder@sm.ecosystem.co", email, "Su nueva contraseña en el sistema de matrículas Ecosystem es " + newPassword);
+        JOptionPane.showMessageDialog(null, "Su nueva contraseña fue enviada a su dirección de correo electrónico");
+        jTextFieldRenewalEmail.setText(null);
+        showTrademarkPanel();
     }
 
     /**
@@ -73,11 +127,21 @@ public class SigninFrame extends EcosystemFrame {
     private void initComponents() {
 
         jPanelMain = new javax.swing.JPanel();
+        jLabelIcon = new javax.swing.JLabel();
+        jButtonIcon = new javax.swing.JButton();
+        jLabelUserIcon = new javax.swing.JLabel();
+        jLabelUser = new javax.swing.JLabel();
+        jTextFieldUser = new javax.swing.JTextField();
+        jLabelLockIcon = new javax.swing.JLabel();
+        jLabelPassword = new javax.swing.JLabel();
+        jPasswordFieldPwd = new javax.swing.JPasswordField();
+        jLabelForgotPwd = new javax.swing.JLabel();
         jButtonLogin = new javax.swing.JButton();
+        jButtonShowSignup = new javax.swing.JButton();
         jPanelRight = new javax.swing.JPanel();
         jPanelSignup = new javax.swing.JPanel();
-        jLabelRightLogo = new javax.swing.JLabel();
-        jLabelRightProduct = new javax.swing.JLabel();
+        jLabelRightLogo1 = new javax.swing.JLabel();
+        jLabelRightProduct1 = new javax.swing.JLabel();
         jLabelFname = new javax.swing.JLabel();
         jTextFieldFname = new javax.swing.JTextField();
         jLabelLname = new javax.swing.JLabel();
@@ -90,25 +154,89 @@ public class SigninFrame extends EcosystemFrame {
         jPasswordFieldConfirm = new javax.swing.JPasswordField();
         jButtonSignup = new javax.swing.JButton();
         jButtonSignupClose = new javax.swing.JButton();
+        jPanelForgotPwd = new javax.swing.JPanel();
+        jLabelRightLogo2 = new javax.swing.JLabel();
+        jLabelRightProduct2 = new javax.swing.JLabel();
+        jLabelRenewalEmail = new javax.swing.JLabel();
+        jTextFieldRenewalEmail = new javax.swing.JTextField();
+        jButtonRequest = new javax.swing.JButton();
+        jButtonForgotPwdClose = new javax.swing.JButton();
         jPanelTrademark = new javax.swing.JPanel();
         jLabelTrademark = new javax.swing.JLabel();
         jLabelProduct = new javax.swing.JLabel();
-        jButtonShowSignup = new javax.swing.JButton();
-        jLabelIcon = new javax.swing.JLabel();
-        jButtonIcon = new javax.swing.JButton();
-        jLabelUserIcon = new javax.swing.JLabel();
-        jLabelUser = new javax.swing.JLabel();
-        jTextFieldUser = new javax.swing.JTextField();
-        jLabelLockIcon = new javax.swing.JLabel();
-        jLabelPassword = new javax.swing.JLabel();
-        jPasswordFieldPwd = new javax.swing.JPasswordField();
-        jLabelForgotPwd = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setResizable(false);
 
         jPanelMain.setForeground(new java.awt.Color(255, 255, 255));
         jPanelMain.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
+
+        jLabelIcon.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Images/check.png"))); // NOI18N
+        jPanelMain.add(jLabelIcon, new org.netbeans.lib.awtextra.AbsoluteConstraints(178, 60, -1, -1));
+
+        jButtonIcon.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Images/letter.png"))); // NOI18N
+        jButtonIcon.setToolTipText("Email");
+        jButtonIcon.setBorder(null);
+        jButtonIcon.setBorderPainted(false);
+        jButtonIcon.setContentAreaFilled(false);
+        jButtonIcon.setRolloverIcon(new javax.swing.ImageIcon(getClass().getResource("/Images/letter-active.png"))); // NOI18N
+        jPanelMain.add(jButtonIcon, new org.netbeans.lib.awtextra.AbsoluteConstraints(50, 20, -1, 28));
+
+        jLabelUserIcon.setFont(new java.awt.Font("Trebuchet MS", 1, 36)); // NOI18N
+        jLabelUserIcon.setForeground(new java.awt.Color(44, 130, 201));
+        jLabelUserIcon.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Images/profile.png"))); // NOI18N
+        jPanelMain.add(jLabelUserIcon, new org.netbeans.lib.awtextra.AbsoluteConstraints(58, 203, -1, 45));
+
+        jLabelUser.setFont(new java.awt.Font("Verdana", 0, 14)); // NOI18N
+        jLabelUser.setForeground(new java.awt.Color(44, 201, 130));
+        jLabelUser.setText("Usuario");
+        jPanelMain.add(jLabelUser, new org.netbeans.lib.awtextra.AbsoluteConstraints(201, 180, -1, -1));
+
+        jTextFieldUser.setBackground(new java.awt.Color(31, 36, 42));
+        jTextFieldUser.setFont(new java.awt.Font("Trebuchet MS", 0, 18)); // NOI18N
+        jTextFieldUser.setForeground(new java.awt.Color(255, 255, 255));
+        jTextFieldUser.setBorder(javax.swing.BorderFactory.createEmptyBorder(5, 5, 5, 5));
+        jTextFieldUser.setCaretColor(new java.awt.Color(255, 255, 255));
+        jTextFieldUser.setNextFocusableComponent(jPasswordFieldPwd);
+        jTextFieldUser.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jTextFieldUserActionPerformed(evt);
+            }
+        });
+        jPanelMain.add(jTextFieldUser, new org.netbeans.lib.awtextra.AbsoluteConstraints(98, 205, 260, 40));
+
+        jLabelLockIcon.setFont(new java.awt.Font("Trebuchet MS", 1, 36)); // NOI18N
+        jLabelLockIcon.setForeground(new java.awt.Color(169, 224, 49));
+        jLabelLockIcon.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Images/padlock.png"))); // NOI18N
+        jPanelMain.add(jLabelLockIcon, new org.netbeans.lib.awtextra.AbsoluteConstraints(58, 300, -1, 45));
+
+        jLabelPassword.setFont(new java.awt.Font("Verdana", 0, 14)); // NOI18N
+        jLabelPassword.setForeground(new java.awt.Color(44, 201, 130));
+        jLabelPassword.setText("Contraseña");
+        jPanelMain.add(jLabelPassword, new org.netbeans.lib.awtextra.AbsoluteConstraints(187, 280, -1, -1));
+
+        jPasswordFieldPwd.setBackground(new java.awt.Color(31, 36, 42));
+        jPasswordFieldPwd.setFont(new java.awt.Font("Trebuchet MS", 0, 18)); // NOI18N
+        jPasswordFieldPwd.setForeground(new java.awt.Color(255, 255, 255));
+        jPasswordFieldPwd.setBorder(javax.swing.BorderFactory.createEmptyBorder(5, 5, 5, 5));
+        jPasswordFieldPwd.setCaretColor(new java.awt.Color(255, 255, 255));
+        jPasswordFieldPwd.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jPasswordFieldPwdActionPerformed(evt);
+            }
+        });
+        jPanelMain.add(jPasswordFieldPwd, new org.netbeans.lib.awtextra.AbsoluteConstraints(98, 305, 260, 40));
+
+        jLabelForgotPwd.setFont(new java.awt.Font("Verdana", 0, 14)); // NOI18N
+        jLabelForgotPwd.setForeground(new java.awt.Color(44, 201, 130));
+        jLabelForgotPwd.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        jLabelForgotPwd.setText("¿Olvidó su contraseña?");
+        jLabelForgotPwd.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                jLabelForgotPwdMouseClicked(evt);
+            }
+        });
+        jPanelMain.add(jLabelForgotPwd, new org.netbeans.lib.awtextra.AbsoluteConstraints(146, 370, -1, -1));
 
         jButtonLogin.setBackground(new java.awt.Color(31, 36, 42));
         jButtonLogin.setFont(new java.awt.Font("Trebuchet MS", 0, 18)); // NOI18N
@@ -126,6 +254,23 @@ public class SigninFrame extends EcosystemFrame {
         });
         jPanelMain.add(jButtonLogin, new org.netbeans.lib.awtextra.AbsoluteConstraints(98, 420, 260, 40));
 
+        jButtonShowSignup.setBackground(new java.awt.Color(44, 130, 201));
+        jButtonShowSignup.setFont(new java.awt.Font("Verdana", 0, 14)); // NOI18N
+        jButtonShowSignup.setForeground(new java.awt.Color(44, 201, 130));
+        jButtonShowSignup.setText("Regístrese");
+        jButtonShowSignup.setBorder(null);
+        jButtonShowSignup.setBorderPainted(false);
+        jButtonShowSignup.setContentAreaFilled(false);
+        jButtonShowSignup.setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
+        jButtonShowSignup.setRequestFocusEnabled(false);
+        jButtonShowSignup.setVerifyInputWhenFocusTarget(false);
+        jButtonShowSignup.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButtonShowSignupActionPerformed(evt);
+            }
+        });
+        jPanelMain.add(jButtonShowSignup, new org.netbeans.lib.awtextra.AbsoluteConstraints(190, 480, -1, -1));
+
         jPanelRight.setBackground(new java.awt.Color(46, 49, 49));
         jPanelRight.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
 
@@ -133,17 +278,17 @@ public class SigninFrame extends EcosystemFrame {
         jPanelSignup.setPreferredSize(new java.awt.Dimension(455, 543));
         jPanelSignup.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
 
-        jLabelRightLogo.setFont(new java.awt.Font("Trebuchet MS", 1, 36)); // NOI18N
-        jLabelRightLogo.setForeground(new java.awt.Color(44, 201, 130));
-        jLabelRightLogo.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Images/passed-exam.png"))); // NOI18N
-        jLabelRightLogo.setText("EcoSystem");
-        jPanelSignup.add(jLabelRightLogo, new org.netbeans.lib.awtextra.AbsoluteConstraints(87, 10, -1, -1));
+        jLabelRightLogo1.setFont(new java.awt.Font("Trebuchet MS", 1, 36)); // NOI18N
+        jLabelRightLogo1.setForeground(new java.awt.Color(44, 201, 130));
+        jLabelRightLogo1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Images/passed-exam.png"))); // NOI18N
+        jLabelRightLogo1.setText("EcoSystem");
+        jPanelSignup.add(jLabelRightLogo1, new org.netbeans.lib.awtextra.AbsoluteConstraints(87, 10, -1, -1));
 
-        jLabelRightProduct.setFont(new java.awt.Font("Trebuchet MS", 0, 18)); // NOI18N
-        jLabelRightProduct.setForeground(new java.awt.Color(44, 201, 130));
-        jLabelRightProduct.setText("Sistema de matriculas");
-        jPanelSignup.add(jLabelRightProduct, new org.netbeans.lib.awtextra.AbsoluteConstraints(193, 80, -1, -1));
-        jLabelRightProduct.getAccessibleContext().setAccessibleName("Sistema de Matriculas");
+        jLabelRightProduct1.setFont(new java.awt.Font("Trebuchet MS", 0, 18)); // NOI18N
+        jLabelRightProduct1.setForeground(new java.awt.Color(44, 201, 130));
+        jLabelRightProduct1.setText("Sistema de matriculas");
+        jPanelSignup.add(jLabelRightProduct1, new org.netbeans.lib.awtextra.AbsoluteConstraints(193, 80, -1, -1));
+        jLabelRightProduct1.getAccessibleContext().setAccessibleName("Sistema de Matriculas");
 
         jLabelFname.setFont(new java.awt.Font("Trebuchet MS", 0, 16)); // NOI18N
         jLabelFname.setForeground(new java.awt.Color(44, 201, 130));
@@ -243,8 +388,70 @@ public class SigninFrame extends EcosystemFrame {
 
         jPanelRight.add(jPanelSignup, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 50, -1, -1));
 
+        jPanelForgotPwd.setBackground(new java.awt.Color(46, 49, 49));
+        jPanelForgotPwd.setPreferredSize(new java.awt.Dimension(455, 543));
+        jPanelForgotPwd.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
+
+        jLabelRightLogo2.setFont(new java.awt.Font("Trebuchet MS", 1, 36)); // NOI18N
+        jLabelRightLogo2.setForeground(new java.awt.Color(44, 201, 130));
+        jLabelRightLogo2.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Images/passed-exam.png"))); // NOI18N
+        jLabelRightLogo2.setText("EcoSystem");
+        jPanelForgotPwd.add(jLabelRightLogo2, new org.netbeans.lib.awtextra.AbsoluteConstraints(87, 60, -1, -1));
+
+        jLabelRightProduct2.setFont(new java.awt.Font("Trebuchet MS", 0, 18)); // NOI18N
+        jLabelRightProduct2.setForeground(new java.awt.Color(44, 201, 130));
+        jLabelRightProduct2.setText("Sistema de matriculas");
+        jPanelForgotPwd.add(jLabelRightProduct2, new org.netbeans.lib.awtextra.AbsoluteConstraints(193, 130, -1, -1));
+
+        jLabelRenewalEmail.setFont(new java.awt.Font("Trebuchet MS", 0, 16)); // NOI18N
+        jLabelRenewalEmail.setForeground(new java.awt.Color(44, 201, 130));
+        jLabelRenewalEmail.setText("E-mail");
+        jPanelForgotPwd.add(jLabelRenewalEmail, new org.netbeans.lib.awtextra.AbsoluteConstraints(63, 190, -1, -1));
+
+        jTextFieldRenewalEmail.setBackground(new java.awt.Color(61, 66, 72));
+        jTextFieldRenewalEmail.setFont(new java.awt.Font("Trebuchet MS", 0, 18)); // NOI18N
+        jTextFieldRenewalEmail.setForeground(new java.awt.Color(255, 255, 255));
+        jTextFieldRenewalEmail.setBorder(javax.swing.BorderFactory.createEmptyBorder(5, 5, 5, 5));
+        jTextFieldRenewalEmail.setCaretColor(new java.awt.Color(255, 255, 255));
+        jTextFieldRenewalEmail.setNextFocusableComponent(jPasswordFieldSignup);
+        jPanelForgotPwd.add(jTextFieldRenewalEmail, new org.netbeans.lib.awtextra.AbsoluteConstraints(63, 210, 330, 40));
+
+        jButtonRequest.setBackground(new java.awt.Color(44, 201, 130));
+        jButtonRequest.setFont(new java.awt.Font("Trebuchet MS", 0, 18)); // NOI18N
+        jButtonRequest.setForeground(new java.awt.Color(21, 25, 28));
+        jButtonRequest.setText("Solicitar nueva constraseña");
+        jButtonRequest.setBorder(null);
+        jButtonRequest.setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
+        jButtonRequest.setFocusPainted(false);
+        jButtonRequest.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButtonRequestActionPerformed(evt);
+            }
+        });
+        jPanelForgotPwd.add(jButtonRequest, new org.netbeans.lib.awtextra.AbsoluteConstraints(63, 275, 330, 40));
+
+        jButtonForgotPwdClose.setBackground(new java.awt.Color(44, 130, 201));
+        jButtonForgotPwdClose.setFont(new java.awt.Font("Trebuchet MS", 1, 18)); // NOI18N
+        jButtonForgotPwdClose.setForeground(new java.awt.Color(44, 201, 130));
+        jButtonForgotPwdClose.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Images/back.png"))); // NOI18N
+        jButtonForgotPwdClose.setText("Salir");
+        jButtonForgotPwdClose.setBorder(null);
+        jButtonForgotPwdClose.setContentAreaFilled(false);
+        jButtonForgotPwdClose.setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
+        jButtonForgotPwdClose.setIconTextGap(10);
+        jButtonForgotPwdClose.setRequestFocusEnabled(false);
+        jButtonForgotPwdClose.setVerifyInputWhenFocusTarget(false);
+        jButtonForgotPwdClose.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButtonForgotPwdCloseActionPerformed(evt);
+            }
+        });
+        jPanelForgotPwd.add(jButtonForgotPwdClose, new org.netbeans.lib.awtextra.AbsoluteConstraints(188, 335, -1, -1));
+
+        jPanelRight.add(jPanelForgotPwd, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 50, -1, -1));
+
         jPanelTrademark.setBackground(new java.awt.Color(46, 49, 49));
-        jPanelTrademark.setPreferredSize(new java.awt.Dimension(455, 543));
+        jPanelTrademark.setPreferredSize(new java.awt.Dimension(455, 620));
         jPanelTrademark.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
 
         jLabelTrademark.setFont(new java.awt.Font("Trebuchet MS", 1, 36)); // NOI18N
@@ -258,88 +465,9 @@ public class SigninFrame extends EcosystemFrame {
         jLabelProduct.setText("Sistema de matriculas");
         jPanelTrademark.add(jLabelProduct, new org.netbeans.lib.awtextra.AbsoluteConstraints(49, 310, -1, -1));
 
-        jPanelRight.add(jPanelTrademark, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 3, -1, 590));
+        jPanelRight.add(jPanelTrademark, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 3, -1, -1));
 
         jPanelMain.add(jPanelRight, new org.netbeans.lib.awtextra.AbsoluteConstraints(455, 0, 455, 620));
-
-        jButtonShowSignup.setBackground(new java.awt.Color(44, 130, 201));
-        jButtonShowSignup.setFont(new java.awt.Font("Verdana", 0, 14)); // NOI18N
-        jButtonShowSignup.setForeground(new java.awt.Color(44, 201, 130));
-        jButtonShowSignup.setText("Regístrese");
-        jButtonShowSignup.setBorder(null);
-        jButtonShowSignup.setBorderPainted(false);
-        jButtonShowSignup.setContentAreaFilled(false);
-        jButtonShowSignup.setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
-        jButtonShowSignup.setRequestFocusEnabled(false);
-        jButtonShowSignup.setVerifyInputWhenFocusTarget(false);
-        jButtonShowSignup.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButtonShowSignupActionPerformed(evt);
-            }
-        });
-        jPanelMain.add(jButtonShowSignup, new org.netbeans.lib.awtextra.AbsoluteConstraints(190, 480, -1, -1));
-
-        jLabelIcon.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Images/check.png"))); // NOI18N
-        jPanelMain.add(jLabelIcon, new org.netbeans.lib.awtextra.AbsoluteConstraints(178, 60, -1, -1));
-
-        jButtonIcon.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Images/letter.png"))); // NOI18N
-        jButtonIcon.setToolTipText("Email");
-        jButtonIcon.setBorder(null);
-        jButtonIcon.setBorderPainted(false);
-        jButtonIcon.setContentAreaFilled(false);
-        jButtonIcon.setRolloverIcon(new javax.swing.ImageIcon(getClass().getResource("/Images/letter-active.png"))); // NOI18N
-        jPanelMain.add(jButtonIcon, new org.netbeans.lib.awtextra.AbsoluteConstraints(50, 20, -1, 28));
-
-        jLabelUserIcon.setFont(new java.awt.Font("Trebuchet MS", 1, 36)); // NOI18N
-        jLabelUserIcon.setForeground(new java.awt.Color(44, 130, 201));
-        jLabelUserIcon.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Images/profile.png"))); // NOI18N
-        jPanelMain.add(jLabelUserIcon, new org.netbeans.lib.awtextra.AbsoluteConstraints(58, 203, -1, 45));
-
-        jLabelUser.setFont(new java.awt.Font("Verdana", 0, 14)); // NOI18N
-        jLabelUser.setForeground(new java.awt.Color(44, 201, 130));
-        jLabelUser.setText("Usuario");
-        jPanelMain.add(jLabelUser, new org.netbeans.lib.awtextra.AbsoluteConstraints(201, 180, -1, -1));
-
-        jTextFieldUser.setBackground(new java.awt.Color(31, 36, 42));
-        jTextFieldUser.setFont(new java.awt.Font("Trebuchet MS", 0, 18)); // NOI18N
-        jTextFieldUser.setForeground(new java.awt.Color(255, 255, 255));
-        jTextFieldUser.setBorder(javax.swing.BorderFactory.createEmptyBorder(5, 5, 5, 5));
-        jTextFieldUser.setCaretColor(new java.awt.Color(255, 255, 255));
-        jTextFieldUser.setNextFocusableComponent(jPasswordFieldPwd);
-        jTextFieldUser.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jTextFieldUserActionPerformed(evt);
-            }
-        });
-        jPanelMain.add(jTextFieldUser, new org.netbeans.lib.awtextra.AbsoluteConstraints(98, 205, 260, 40));
-
-        jLabelLockIcon.setFont(new java.awt.Font("Trebuchet MS", 1, 36)); // NOI18N
-        jLabelLockIcon.setForeground(new java.awt.Color(169, 224, 49));
-        jLabelLockIcon.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Images/padlock.png"))); // NOI18N
-        jPanelMain.add(jLabelLockIcon, new org.netbeans.lib.awtextra.AbsoluteConstraints(58, 300, -1, 45));
-
-        jLabelPassword.setFont(new java.awt.Font("Verdana", 0, 14)); // NOI18N
-        jLabelPassword.setForeground(new java.awt.Color(44, 201, 130));
-        jLabelPassword.setText("Contraseña");
-        jPanelMain.add(jLabelPassword, new org.netbeans.lib.awtextra.AbsoluteConstraints(187, 280, -1, -1));
-
-        jPasswordFieldPwd.setBackground(new java.awt.Color(31, 36, 42));
-        jPasswordFieldPwd.setFont(new java.awt.Font("Trebuchet MS", 0, 18)); // NOI18N
-        jPasswordFieldPwd.setForeground(new java.awt.Color(255, 255, 255));
-        jPasswordFieldPwd.setBorder(javax.swing.BorderFactory.createEmptyBorder(5, 5, 5, 5));
-        jPasswordFieldPwd.setCaretColor(new java.awt.Color(255, 255, 255));
-        jPasswordFieldPwd.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jPasswordFieldPwdActionPerformed(evt);
-            }
-        });
-        jPanelMain.add(jPasswordFieldPwd, new org.netbeans.lib.awtextra.AbsoluteConstraints(98, 305, 260, 40));
-
-        jLabelForgotPwd.setFont(new java.awt.Font("Verdana", 0, 14)); // NOI18N
-        jLabelForgotPwd.setForeground(new java.awt.Color(44, 201, 130));
-        jLabelForgotPwd.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        jLabelForgotPwd.setText("¿Olvidó su contraseña?");
-        jPanelMain.add(jLabelForgotPwd, new org.netbeans.lib.awtextra.AbsoluteConstraints(146, 370, -1, -1));
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -382,7 +510,7 @@ public class SigninFrame extends EcosystemFrame {
     }//GEN-LAST:event_jButtonLoginActionPerformed
 
     private void jButtonSignupActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonSignupActionPerformed
-        if (!validator.validateForm())
+        if (!signupValidator.validateForm())
             return;
 
         String fname = jTextFieldFname.getText();
@@ -393,24 +521,27 @@ public class SigninFrame extends EcosystemFrame {
 
         if (!password.equals(pwdConfirm)) {
             JOptionPane.showMessageDialog(null, "Las contraseñas no coinciden, por favor verifique", "Ecosystem", JOptionPane.ERROR_MESSAGE);
-            validator.focus(jPasswordFieldSignup);
+            signupValidator.focus(jPasswordFieldSignup);
             return;
         }
 
         Applicant user = new Applicant(email, password, fname, lname);
-        if (userManager.add(user)) {
-            JOptionPane.showMessageDialog(null, "Usuario registrado satisfactoriamente, debe iniciar sesión para verificar su identidad", "Ecosystem", JOptionPane.INFORMATION_MESSAGE);
-            hideSignupPanel();
-            validator.clear();
-        } else {
+        if (!userManager.add(user)) {
             JOptionPane.showMessageDialog(null, "El usuario ya se encuentra registrado", "Ecosystem", JOptionPane.ERROR_MESSAGE);
-            validator.focus(jTextFieldEmail);
+            signupValidator.focus(jTextFieldEmail);
+            return;
         }
-    }//GEN-LAST:event_jButtonSignupActionPerformed
 
-    private void jButtonSignupCloseActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonSignupCloseActionPerformed
-        hideSignupPanel();
-    }//GEN-LAST:event_jButtonSignupCloseActionPerformed
+        Object requestCountObj = meta.getItem("requestCount");
+        if (requestCountObj == null)
+            meta.setItem("requestCount", 1);
+        else
+            meta.setItem("requestCount", ((int) requestCountObj) + 1);
+
+        JOptionPane.showMessageDialog(null, "Usuario registrado satisfactoriamente, debe iniciar sesión para verificar su identidad", "Ecosystem", JOptionPane.INFORMATION_MESSAGE);
+        showTrademarkPanel();
+        signupValidator.clear();
+    }//GEN-LAST:event_jButtonSignupActionPerformed
 
     private void jTextFieldUserActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jTextFieldUserActionPerformed
         jButtonLogin.doClick();
@@ -420,6 +551,25 @@ public class SigninFrame extends EcosystemFrame {
         jButtonLogin.doClick();
     }//GEN-LAST:event_jPasswordFieldPwdActionPerformed
 
+    private void jButtonSignupCloseActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonSignupCloseActionPerformed
+        showTrademarkPanel();
+    }//GEN-LAST:event_jButtonSignupCloseActionPerformed
+
+    private void jLabelForgotPwdMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jLabelForgotPwdMouseClicked
+        showForgotPasswordPanel();
+    }//GEN-LAST:event_jLabelForgotPwdMouseClicked
+
+    private void jButtonForgotPwdCloseActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonForgotPwdCloseActionPerformed
+        showTrademarkPanel();
+    }//GEN-LAST:event_jButtonForgotPwdCloseActionPerformed
+
+    private void jButtonRequestActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonRequestActionPerformed
+        if (!forgotPwdValidator.validateForm())
+            return;
+
+        requestPasswordRenewal(jTextFieldRenewalEmail.getText());
+    }//GEN-LAST:event_jButtonRequestActionPerformed
+
     public static void main(String args[]) {
         java.awt.EventQueue.invokeLater(() -> {
             new SigninFrame().setVisible(true);
@@ -427,8 +577,10 @@ public class SigninFrame extends EcosystemFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton jButtonForgotPwdClose;
     private javax.swing.JButton jButtonIcon;
     private javax.swing.JButton jButtonLogin;
+    private javax.swing.JButton jButtonRequest;
     private javax.swing.JButton jButtonShowSignup;
     private javax.swing.JButton jButtonSignup;
     private javax.swing.JButton jButtonSignupClose;
@@ -441,12 +593,16 @@ public class SigninFrame extends EcosystemFrame {
     private javax.swing.JLabel jLabelPassword;
     private javax.swing.JLabel jLabelProduct;
     private javax.swing.JLabel jLabelPwdConf;
-    private javax.swing.JLabel jLabelRightLogo;
-    private javax.swing.JLabel jLabelRightProduct;
+    private javax.swing.JLabel jLabelRenewalEmail;
+    private javax.swing.JLabel jLabelRightLogo1;
+    private javax.swing.JLabel jLabelRightLogo2;
+    private javax.swing.JLabel jLabelRightProduct1;
+    private javax.swing.JLabel jLabelRightProduct2;
     private javax.swing.JLabel jLabelSignupPwd;
     private javax.swing.JLabel jLabelTrademark;
     private javax.swing.JLabel jLabelUser;
     private javax.swing.JLabel jLabelUserIcon;
+    private javax.swing.JPanel jPanelForgotPwd;
     private javax.swing.JPanel jPanelMain;
     private javax.swing.JPanel jPanelRight;
     private javax.swing.JPanel jPanelSignup;
@@ -457,6 +613,7 @@ public class SigninFrame extends EcosystemFrame {
     private javax.swing.JTextField jTextFieldEmail;
     private javax.swing.JTextField jTextFieldFname;
     private javax.swing.JTextField jTextFieldLname;
+    private javax.swing.JTextField jTextFieldRenewalEmail;
     private javax.swing.JTextField jTextFieldUser;
     // End of variables declaration//GEN-END:variables
 }

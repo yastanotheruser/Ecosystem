@@ -65,6 +65,10 @@ public class User extends Unique implements Serializable {
         return false;
     }
 
+    public void unsafeChangePassword(String newPwd) {
+        this.pwdHash = MD5Hash.getHash(newPwd);
+    }
+
     public String getPasswordHash() {
         return pwdHash;
     }

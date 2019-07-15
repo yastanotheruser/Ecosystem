@@ -8,10 +8,22 @@ public class MetaManager extends DataManager<MetaEntry> {
     }
 
     public Object getItem(String key) {
-        return get(key).getValue();
+        MetaEntry entry = this.get(key);
+        if (entry == null)
+            return null;
+
+        return entry.getValue();
     }
 
-    public void setItem(String key, Object value) {
-        get(key).setValue(value);
+    public boolean setItem(String key, Object value) {
+        MetaEntry entry = this.get(key);
+        if (entry == null) {
+            entry = new MetaEntry(key, value);
+            this.add(entry);
+        } else {
+            entry.setValue(value);
+        }
+
+        return update();
     }
 }

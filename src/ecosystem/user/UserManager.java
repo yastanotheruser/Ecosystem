@@ -40,6 +40,6 @@ public class UserManager extends DataManager<User> {
     }
 
     public static void main(String[] args) {
-        new UserManager("users.dat");
+        new UserManager("users");
     }
 }

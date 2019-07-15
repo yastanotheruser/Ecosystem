@@ -3,7 +3,6 @@ package ecosystem;
 import ecosystem.dialogs.AddSubjectDialog;
 import static ecosystem.Ecosystem.*;
 import ecosystem.academic.Professor;
-import ecosystem.academic.Static;
 import ecosystem.academic.Subject;
 import ecosystem.util.*;
 import ecosystem.user.*;
@@ -12,6 +11,7 @@ import ecosystem.dialogs.AddProfessorDialog;
 import ecosystem.dialogs.PictureDialog;
 import ecosystem.event.MouseClickedListener;
 import java.awt.Color;
+import java.awt.Font;
 import java.awt.event.MouseEvent;
 import java.io.File;
 import java.util.ArrayList;
@@ -28,6 +28,7 @@ public class AdminFrame extends EcosystemFrame {
 
     private JTextComponent[] fields;
     private ToggleMenu menu;
+    private NotificationBadge badge;
     private FormValidator validator;
     private File choosenFile;
     private final ArrayList<Student> students;
@@ -128,6 +129,12 @@ public class AdminFrame extends EcosystemFrame {
         }
     }
 
+    private void updateBadge() {
+        int requestCount = (int) meta.getItem("requestsCount");
+        badge.setText(String.valueOf(requestCount));
+        badge.setVisible(requestCount > 0);
+    }
+
     private void initMenu() {
         int count = 0;
         TogglePanel[] options = new TogglePanel[4];
@@ -139,8 +146,19 @@ public class AdminFrame extends EcosystemFrame {
         menu = new ToggleMenu(options, views);
         menu.toggleMenuItem(0);
 
-        menu.addMenuListener((TogglePanel tp, int index) -> {
-            jScrollPaneList.setVisible(index != 1 && index != 3);
+        Object requestCountObj = meta.getItem("requestCount");
+        if (requestCountObj == null)
+            meta.setItem("requestCount", 0);
+
+        int requestCount = (requestCountObj != null) ? (int) requestCountObj : 0;
+        badge = new NotificationBadge(String.valueOf(requestCount), jPanelBadge, 25, 25);
+        badge.setFont(new Font("Trebuchet MS", Font.BOLD, 12));
+        badge.setVisible(requestCount > 0);
+        jPanelBadge.add(badge);
+
+        menu.addMenuListener(2, (TogglePanel tp, int index) -> {
+            meta.setItem("requestCount", 0);
+            updateBadge();
         });
     }
 
@@ -209,7 +227,7 @@ public class AdminFrame extends EcosystemFrame {
 
                 Student stud = (Student) students.get(index);
                 ImageIcon picture = stud.getPicture();
-                
+
                 if (picture == null)
                     JOptionPane.showMessageDialog(null, "No existe foto de perfil para este usuario", "Ecosystem", JOptionPane.INFORMATION_MESSAGE);
                 else
@@ -322,6 +340,8 @@ public class AdminFrame extends EcosystemFrame {
         jMenuItemDeleteProfessors = new javax.swing.JMenuItem();
         jMenuOptions = new javax.swing.JMenu();
         jCheckBoxVerbose = new javax.swing.JCheckBoxMenuItem();
+        jMenuReport = new javax.swing.JMenu();
+        jMenuItemSubjectReport = new javax.swing.JMenuItem();
         jPanelMain = new javax.swing.JPanel();
         jLabelState = new javax.swing.JLabel();
         jPanelLeft = new javax.swing.JPanel();
@@ -332,12 +352,11 @@ public class AdminFrame extends EcosystemFrame {
         jLabelOpt2 = new javax.swing.JLabel();
         jPanelRequestsOpt = new TogglePanel(new Color(44, 93, 59));
         jLabelOpt3 = new javax.swing.JLabel();
+        jPanelBadge = new javax.swing.JPanel();
         jPanelProgrammeOpt = new TogglePanel(new Color(44, 93, 59));
         jLabelOpt5 = new javax.swing.JLabel();
         jPanelLogoutOpt = new TogglePanel(new Color(44, 93, 59));
         jLabelOpt4 = new javax.swing.JLabel();
-        jScrollPaneList = new javax.swing.JScrollPane();
-        jTableList = new javax.swing.JTable();
         jPanelRegister = new javax.swing.JPanel();
         jLabelRequired = new javax.swing.JLabel();
         jLabelId = new javax.swing.JLabel();
@@ -359,15 +378,31 @@ public class AdminFrame extends EcosystemFrame {
         jTextAddress = new javax.swing.JTextArea();
         jButtonRegister = new javax.swing.JButton();
         jPanelFind = new javax.swing.JPanel();
-        jScrollPaneResults = new javax.swing.JScrollPane();
-        jTableSubjectList = new javax.swing.JTable();
         jLabelSubjectIdStatic = new javax.swing.JLabel();
         jTextFieldSubjectId = new javax.swing.JTextField();
         jButtonFind = new javax.swing.JButton();
+        jPanelResult = new javax.swing.JPanel();
         jLabelNameStatic = new javax.swing.JLabel();
         jLabelSubjectName = new javax.swing.JLabel();
         jLabelProfessorStatic = new javax.swing.JLabel();
         jLabelSubjectProfessor = new javax.swing.JLabel();
+        jPanelFinancial = new javax.swing.JPanel();
+        jPanelRow2 = new javax.swing.JPanel();
+        jPanelCredits = new javax.swing.JPanel();
+        jLabelCreditsStatic = new javax.swing.JLabel();
+        jLabelCredits = new javax.swing.JLabel();
+        jPanelCost = new javax.swing.JPanel();
+        jLabelCostStatic = new javax.swing.JLabel();
+        jLabelCost = new javax.swing.JLabel();
+        jPanelRow1 = new javax.swing.JPanel();
+        jPanelEnrollsCount = new javax.swing.JPanel();
+        jLabelEnrollsStatic = new javax.swing.JLabel();
+        jLabelEnrolls = new javax.swing.JLabel();
+        jPanelProfit = new javax.swing.JPanel();
+        jLabelProfitStatic = new javax.swing.JLabel();
+        jLabelProfit = new javax.swing.JLabel();
+        jScrollPaneResults = new javax.swing.JScrollPane();
+        jTableSubjectList = new javax.swing.JTable();
         jPanelRequests = new javax.swing.JPanel();
         jLabelAttachment = new javax.swing.JLabel();
         jScrollPaneRequets = new javax.swing.JScrollPane();
@@ -380,6 +415,8 @@ public class AdminFrame extends EcosystemFrame {
         jTableSubjects = new javax.swing.JTable();
         jScrollPaneProfessors = new javax.swing.JScrollPane();
         jTableProfessors = new javax.swing.JTable();
+        jScrollPaneList = new javax.swing.JScrollPane();
+        jTableList = new javax.swing.JTable();
 
         jMenuBar.setBackground(new java.awt.Color(58, 155, 83));
         jMenuBar.setBorder(javax.swing.BorderFactory.createEmptyBorder(1, 5, 1, 1));
@@ -435,6 +472,19 @@ public class AdminFrame extends EcosystemFrame {
 
         jMenuBar.add(jMenuOptions);
 
+        jMenuReport.setForeground(new java.awt.Color(240, 240, 240));
+        jMenuReport.setText("Reportes");
+
+        jMenuItemSubjectReport.setText("Reporte por asignatura");
+        jMenuItemSubjectReport.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jMenuItemSubjectReportActionPerformed(evt);
+            }
+        });
+        jMenuReport.add(jMenuItemSubjectReport);
+
+        jMenuBar.add(jMenuReport);
+
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
         jPanelMain.setBackground(new java.awt.Color(34, 63, 49));
@@ -456,6 +506,7 @@ public class AdminFrame extends EcosystemFrame {
         jPanelRegisterOpt.setBorder(javax.swing.BorderFactory.createEmptyBorder(0, 20, 0, 0));
         jPanelRegisterOpt.setLayout(new java.awt.GridLayout(1, 0));
 
+        jLabelOpt1.setBackground(new java.awt.Color(44, 73, 59));
         jLabelOpt1.setFont(new java.awt.Font("Trebuchet MS", 1, 14)); // NOI18N
         jLabelOpt1.setForeground(new java.awt.Color(255, 255, 255));
         jLabelOpt1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Images/dossier.png"))); // NOI18N
@@ -469,6 +520,7 @@ public class AdminFrame extends EcosystemFrame {
         jPanelFindOpt.setBorder(javax.swing.BorderFactory.createEmptyBorder(0, 20, 0, 0));
         jPanelFindOpt.setLayout(new java.awt.GridLayout(1, 0));
 
+        jLabelOpt2.setBackground(new java.awt.Color(44, 73, 59));
         jLabelOpt2.setFont(new java.awt.Font("Trebuchet MS", 1, 14)); // NOI18N
         jLabelOpt2.setForeground(new java.awt.Color(255, 255, 255));
         jLabelOpt2.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Images/user-icon.png"))); // NOI18N
@@ -480,15 +532,32 @@ public class AdminFrame extends EcosystemFrame {
 
         jPanelRequestsOpt.setBackground(new java.awt.Color(44, 73, 59));
         jPanelRequestsOpt.setBorder(javax.swing.BorderFactory.createEmptyBorder(0, 20, 0, 0));
-        jPanelRequestsOpt.setLayout(new java.awt.GridLayout(1, 0));
+        jPanelRequestsOpt.setLayout(new java.awt.BorderLayout());
 
-        jLabelOpt3.setBackground(new java.awt.Color(44, 59, 73));
+        jLabelOpt3.setBackground(new java.awt.Color(44, 73, 59));
         jLabelOpt3.setFont(new java.awt.Font("Trebuchet MS", 1, 14)); // NOI18N
         jLabelOpt3.setForeground(new java.awt.Color(255, 255, 255));
         jLabelOpt3.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Images/report-card.png"))); // NOI18N
         jLabelOpt3.setText("Solicitudes");
         jLabelOpt3.setIconTextGap(6);
-        jPanelRequestsOpt.add(jLabelOpt3);
+        jPanelRequestsOpt.add(jLabelOpt3, java.awt.BorderLayout.CENTER);
+
+        jPanelBadge.setBackground(new java.awt.Color(44, 73, 59));
+        jPanelBadge.setOpaque(false);
+        jPanelBadge.setPreferredSize(new java.awt.Dimension(72, 50));
+
+        javax.swing.GroupLayout jPanelBadgeLayout = new javax.swing.GroupLayout(jPanelBadge);
+        jPanelBadge.setLayout(jPanelBadgeLayout);
+        jPanelBadgeLayout.setHorizontalGroup(
+            jPanelBadgeLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 72, Short.MAX_VALUE)
+        );
+        jPanelBadgeLayout.setVerticalGroup(
+            jPanelBadgeLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 50, Short.MAX_VALUE)
+        );
+
+        jPanelRequestsOpt.add(jPanelBadge, java.awt.BorderLayout.EAST);
 
         jPanelMenu.add(jPanelRequestsOpt);
 
@@ -496,7 +565,7 @@ public class AdminFrame extends EcosystemFrame {
         jPanelProgrammeOpt.setBorder(javax.swing.BorderFactory.createEmptyBorder(0, 20, 0, 0));
         jPanelProgrammeOpt.setLayout(new java.awt.GridLayout(1, 0));
 
-        jLabelOpt5.setBackground(new java.awt.Color(44, 59, 73));
+        jLabelOpt5.setBackground(new java.awt.Color(44, 73, 59));
         jLabelOpt5.setFont(new java.awt.Font("Trebuchet MS", 1, 14)); // NOI18N
         jLabelOpt5.setForeground(new java.awt.Color(255, 255, 255));
         jLabelOpt5.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Images/manage.png"))); // NOI18N
@@ -515,7 +584,7 @@ public class AdminFrame extends EcosystemFrame {
         });
         jPanelLogoutOpt.setLayout(new java.awt.GridLayout(1, 0));
 
-        jLabelOpt4.setBackground(new java.awt.Color(44, 59, 73));
+        jLabelOpt4.setBackground(new java.awt.Color(44, 73, 59));
         jLabelOpt4.setFont(new java.awt.Font("Trebuchet MS", 1, 14)); // NOI18N
         jLabelOpt4.setForeground(new java.awt.Color(255, 255, 255));
         jLabelOpt4.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Images/back-white.png"))); // NOI18N
@@ -528,35 +597,6 @@ public class AdminFrame extends EcosystemFrame {
         jPanelLeft.add(jPanelMenu, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 60, 220, 250));
 
         jPanelMain.add(jPanelLeft, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, 220, 600));
-
-        jScrollPaneList.setBorder(null);
-
-        jTableList.setModel(new javax.swing.table.DefaultTableModel(
-            new Object [][] {
-
-            },
-            new String [] {
-                "Identificación", "Apellidos", "Nombres", "E-mail"
-            }
-        ) {
-            Class[] types = new Class [] {
-                java.lang.String.class, java.lang.String.class, java.lang.String.class, java.lang.String.class
-            };
-            boolean[] canEdit = new boolean [] {
-                false, false, false, false
-            };
-
-            public Class getColumnClass(int columnIndex) {
-                return types [columnIndex];
-            }
-
-            public boolean isCellEditable(int rowIndex, int columnIndex) {
-                return canEdit [columnIndex];
-            }
-        });
-        jScrollPaneList.setViewportView(jTableList);
-
-        jPanelMain.add(jScrollPaneList, new org.netbeans.lib.awtextra.AbsoluteConstraints(220, 344, 757, 256));
 
         jPanelRegister.setBackground(new java.awt.Color(58, 155, 83));
         jPanelRegister.setNextFocusableComponent(jTextFieldId);
@@ -686,6 +726,127 @@ public class AdminFrame extends EcosystemFrame {
         jPanelFind.setNextFocusableComponent(jTextFieldId);
         jPanelFind.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
 
+        jLabelSubjectIdStatic.setFont(new java.awt.Font("Trebuchet MS", 0, 16)); // NOI18N
+        jLabelSubjectIdStatic.setForeground(new java.awt.Color(255, 255, 255));
+        jLabelSubjectIdStatic.setLabelFor(jTextFieldSubjectId);
+        jLabelSubjectIdStatic.setText("Código de materia");
+        jPanelFind.add(jLabelSubjectIdStatic, new org.netbeans.lib.awtextra.AbsoluteConstraints(40, 25, -1, -1));
+
+        jTextFieldSubjectId.setFont(new java.awt.Font("Trebuchet MS", 0, 14)); // NOI18N
+        jTextFieldSubjectId.setForeground(new java.awt.Color(34, 49, 63));
+        jTextFieldSubjectId.setBorder(javax.swing.BorderFactory.createEmptyBorder(5, 5, 5, 5));
+        jTextFieldSubjectId.setNextFocusableComponent(jTextFieldEmail);
+        jPanelFind.add(jTextFieldSubjectId, new org.netbeans.lib.awtextra.AbsoluteConstraints(187, 20, 70, -1));
+
+        jButtonFind.setBackground(new java.awt.Color(231, 231, 231));
+        jButtonFind.setFont(new java.awt.Font("Trebuchet MS", 0, 12)); // NOI18N
+        jButtonFind.setForeground(new java.awt.Color(21, 25, 28));
+        jButtonFind.setText("Buscar");
+        jButtonFind.setBorder(null);
+        jButtonFind.setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
+        jButtonFind.setFocusPainted(false);
+        jButtonFind.setPreferredSize(new java.awt.Dimension(75, 25));
+        jButtonFind.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButtonFindActionPerformed(evt);
+            }
+        });
+        jPanelFind.add(jButtonFind, new org.netbeans.lib.awtextra.AbsoluteConstraints(280, 22, -1, -1));
+
+        jPanelResult.setOpaque(false);
+        jPanelResult.setPreferredSize(new java.awt.Dimension(757, 540));
+        jPanelResult.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
+
+        jLabelNameStatic.setFont(new java.awt.Font("Trebuchet MS", 0, 16)); // NOI18N
+        jLabelNameStatic.setForeground(new java.awt.Color(255, 255, 255));
+        jLabelNameStatic.setText("Nombre:");
+        jPanelResult.add(jLabelNameStatic, new org.netbeans.lib.awtextra.AbsoluteConstraints(400, 25, -1, -1));
+        jLabelNameStatic.getAccessibleContext().setAccessibleName("");
+
+        jLabelSubjectName.setFont(new java.awt.Font("Trebuchet MS", 0, 16)); // NOI18N
+        jLabelSubjectName.setForeground(new java.awt.Color(255, 255, 255));
+        jPanelResult.add(jLabelSubjectName, new org.netbeans.lib.awtextra.AbsoluteConstraints(473, 25, 240, 19));
+
+        jLabelProfessorStatic.setFont(new java.awt.Font("Trebuchet MS", 0, 16)); // NOI18N
+        jLabelProfessorStatic.setForeground(new java.awt.Color(255, 255, 255));
+        jLabelProfessorStatic.setText("Docente:");
+        jPanelResult.add(jLabelProfessorStatic, new org.netbeans.lib.awtextra.AbsoluteConstraints(400, 60, -1, -1));
+
+        jLabelSubjectProfessor.setFont(new java.awt.Font("Trebuchet MS", 0, 16)); // NOI18N
+        jLabelSubjectProfessor.setForeground(new java.awt.Color(255, 255, 255));
+        jPanelResult.add(jLabelSubjectProfessor, new org.netbeans.lib.awtextra.AbsoluteConstraints(473, 60, 240, 19));
+
+        jPanelFinancial.setOpaque(false);
+        jPanelFinancial.setLayout(new javax.swing.BoxLayout(jPanelFinancial, javax.swing.BoxLayout.PAGE_AXIS));
+
+        jPanelRow2.setOpaque(false);
+        jPanelRow2.setLayout(new java.awt.GridLayout(1, 2));
+
+        jPanelCredits.setOpaque(false);
+        jPanelCredits.setLayout(new javax.swing.BoxLayout(jPanelCredits, javax.swing.BoxLayout.LINE_AXIS));
+
+        jLabelCreditsStatic.setFont(new java.awt.Font("Trebuchet MS", 0, 16)); // NOI18N
+        jLabelCreditsStatic.setForeground(new java.awt.Color(255, 255, 255));
+        jLabelCreditsStatic.setText("Créditos: ");
+        jPanelCredits.add(jLabelCreditsStatic);
+
+        jLabelCredits.setFont(new java.awt.Font("Trebuchet MS", 0, 16)); // NOI18N
+        jLabelCredits.setForeground(new java.awt.Color(255, 255, 255));
+        jPanelCredits.add(jLabelCredits);
+
+        jPanelRow2.add(jPanelCredits);
+
+        jPanelCost.setOpaque(false);
+        jPanelCost.setLayout(new javax.swing.BoxLayout(jPanelCost, javax.swing.BoxLayout.LINE_AXIS));
+
+        jLabelCostStatic.setFont(new java.awt.Font("Trebuchet MS", 0, 16)); // NOI18N
+        jLabelCostStatic.setForeground(new java.awt.Color(255, 255, 255));
+        jLabelCostStatic.setText("Costo de matrícula: ");
+        jPanelCost.add(jLabelCostStatic);
+
+        jLabelCost.setFont(new java.awt.Font("Trebuchet MS", 0, 16)); // NOI18N
+        jLabelCost.setForeground(new java.awt.Color(255, 255, 255));
+        jPanelCost.add(jLabelCost);
+
+        jPanelRow2.add(jPanelCost);
+
+        jPanelFinancial.add(jPanelRow2);
+
+        jPanelRow1.setOpaque(false);
+        jPanelRow1.setLayout(new java.awt.GridLayout(1, 2));
+
+        jPanelEnrollsCount.setOpaque(false);
+        jPanelEnrollsCount.setLayout(new javax.swing.BoxLayout(jPanelEnrollsCount, javax.swing.BoxLayout.LINE_AXIS));
+
+        jLabelEnrollsStatic.setFont(new java.awt.Font("Trebuchet MS", 0, 16)); // NOI18N
+        jLabelEnrollsStatic.setForeground(new java.awt.Color(255, 255, 255));
+        jLabelEnrollsStatic.setText("Estudiantes matriculados: ");
+        jPanelEnrollsCount.add(jLabelEnrollsStatic);
+
+        jLabelEnrolls.setFont(new java.awt.Font("Trebuchet MS", 0, 16)); // NOI18N
+        jLabelEnrolls.setForeground(new java.awt.Color(255, 255, 255));
+        jPanelEnrollsCount.add(jLabelEnrolls);
+
+        jPanelRow1.add(jPanelEnrollsCount);
+
+        jPanelProfit.setOpaque(false);
+        jPanelProfit.setLayout(new javax.swing.BoxLayout(jPanelProfit, javax.swing.BoxLayout.LINE_AXIS));
+
+        jLabelProfitStatic.setFont(new java.awt.Font("Trebuchet MS", 0, 16)); // NOI18N
+        jLabelProfitStatic.setForeground(new java.awt.Color(255, 255, 255));
+        jLabelProfitStatic.setText("Total recibido: ");
+        jPanelProfit.add(jLabelProfitStatic);
+
+        jLabelProfit.setFont(new java.awt.Font("Trebuchet MS", 0, 16)); // NOI18N
+        jLabelProfit.setForeground(new java.awt.Color(255, 255, 255));
+        jPanelProfit.add(jLabelProfit);
+
+        jPanelRow1.add(jPanelProfit);
+
+        jPanelFinancial.add(jPanelRow1);
+
+        jPanelResult.add(jPanelFinancial, new org.netbeans.lib.awtextra.AbsoluteConstraints(40, 105, 677, 70));
+
         jScrollPaneResults.setBorder(null);
 
         jTableSubjectList.setModel(new javax.swing.table.DefaultTableModel(
@@ -713,52 +874,9 @@ public class AdminFrame extends EcosystemFrame {
         });
         jScrollPaneResults.setViewportView(jTableSubjectList);
 
-        jPanelFind.add(jScrollPaneResults, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 100, 757, 540));
+        jPanelResult.add(jScrollPaneResults, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 200, 757, 340));
 
-        jLabelSubjectIdStatic.setFont(new java.awt.Font("Trebuchet MS", 0, 16)); // NOI18N
-        jLabelSubjectIdStatic.setForeground(new java.awt.Color(255, 255, 255));
-        jLabelSubjectIdStatic.setText("Código de materia");
-        jPanelFind.add(jLabelSubjectIdStatic, new org.netbeans.lib.awtextra.AbsoluteConstraints(40, 25, -1, -1));
-
-        jTextFieldSubjectId.setFont(new java.awt.Font("Trebuchet MS", 0, 14)); // NOI18N
-        jTextFieldSubjectId.setForeground(new java.awt.Color(34, 49, 63));
-        jTextFieldSubjectId.setBorder(javax.swing.BorderFactory.createEmptyBorder(5, 5, 5, 5));
-        jTextFieldSubjectId.setNextFocusableComponent(jTextFieldEmail);
-        jPanelFind.add(jTextFieldSubjectId, new org.netbeans.lib.awtextra.AbsoluteConstraints(187, 20, 70, -1));
-
-        jButtonFind.setBackground(new java.awt.Color(231, 231, 231));
-        jButtonFind.setFont(new java.awt.Font("Trebuchet MS", 0, 12)); // NOI18N
-        jButtonFind.setForeground(new java.awt.Color(21, 25, 28));
-        jButtonFind.setText("Buscar");
-        jButtonFind.setBorder(null);
-        jButtonFind.setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
-        jButtonFind.setFocusPainted(false);
-        jButtonFind.setPreferredSize(new java.awt.Dimension(75, 25));
-        jButtonFind.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButtonFindActionPerformed(evt);
-            }
-        });
-        jPanelFind.add(jButtonFind, new org.netbeans.lib.awtextra.AbsoluteConstraints(280, 22, -1, -1));
-
-        jLabelNameStatic.setFont(new java.awt.Font("Trebuchet MS", 0, 16)); // NOI18N
-        jLabelNameStatic.setForeground(new java.awt.Color(255, 255, 255));
-        jLabelNameStatic.setText("Nombre:");
-        jPanelFind.add(jLabelNameStatic, new org.netbeans.lib.awtextra.AbsoluteConstraints(400, 25, -1, -1));
-        jLabelNameStatic.getAccessibleContext().setAccessibleName("");
-
-        jLabelSubjectName.setFont(new java.awt.Font("Trebuchet MS", 0, 16)); // NOI18N
-        jLabelSubjectName.setForeground(new java.awt.Color(255, 255, 255));
-        jPanelFind.add(jLabelSubjectName, new org.netbeans.lib.awtextra.AbsoluteConstraints(473, 25, 240, 19));
-
-        jLabelProfessorStatic.setFont(new java.awt.Font("Trebuchet MS", 0, 16)); // NOI18N
-        jLabelProfessorStatic.setForeground(new java.awt.Color(255, 255, 255));
-        jLabelProfessorStatic.setText("Docente:");
-        jPanelFind.add(jLabelProfessorStatic, new org.netbeans.lib.awtextra.AbsoluteConstraints(400, 60, -1, -1));
-
-        jLabelSubjectProfessor.setFont(new java.awt.Font("Trebuchet MS", 0, 16)); // NOI18N
-        jLabelSubjectProfessor.setForeground(new java.awt.Color(255, 255, 255));
-        jPanelFind.add(jLabelSubjectProfessor, new org.netbeans.lib.awtextra.AbsoluteConstraints(473, 60, 240, 19));
+        jPanelFind.add(jPanelResult, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, -1, -1));
 
         jPanelMain.add(jPanelFind, new org.netbeans.lib.awtextra.AbsoluteConstraints(220, 60, 757, 540));
 
@@ -892,6 +1010,35 @@ public class AdminFrame extends EcosystemFrame {
 
         jPanelMain.add(jPanelProgramme, new org.netbeans.lib.awtextra.AbsoluteConstraints(220, 60, 757, 540));
 
+        jScrollPaneList.setBorder(null);
+
+        jTableList.setModel(new javax.swing.table.DefaultTableModel(
+            new Object [][] {
+
+            },
+            new String [] {
+                "Identificación", "Apellidos", "Nombres", "E-mail"
+            }
+        ) {
+            Class[] types = new Class [] {
+                java.lang.String.class, java.lang.String.class, java.lang.String.class, java.lang.String.class
+            };
+            boolean[] canEdit = new boolean [] {
+                false, false, false, false
+            };
+
+            public Class getColumnClass(int columnIndex) {
+                return types [columnIndex];
+            }
+
+            public boolean isCellEditable(int rowIndex, int columnIndex) {
+                return canEdit [columnIndex];
+            }
+        });
+        jScrollPaneList.setViewportView(jTableList);
+
+        jPanelMain.add(jScrollPaneList, new org.netbeans.lib.awtextra.AbsoluteConstraints(220, 344, 757, 256));
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
@@ -957,40 +1104,46 @@ public class AdminFrame extends EcosystemFrame {
 
     private void jButtonFindActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonFindActionPerformed
         String id = jTextFieldSubjectId.getText();
-        Subject match = null;
+        Subject subj = subjectManager.get(id);
 
-        for (Subject s : Static.subjects) {
-            if (s.is(id)) {
-                match = s;
-                break;
-            }
-        }
-
-        if (match == null) {
+        if (subj == null) {
             JOptionPane.showMessageDialog(null, "No se encontró la materia", "Ecosystem", JOptionPane.INFORMATION_MESSAGE);
             return;
         }
 
-        jLabelSubjectName.setText(match.getName());
+        Professor prof = professorManager.get(subj.getProfessorId());
+        jLabelSubjectName.setText(subj.getName());
+        jLabelSubjectName.setToolTipText(subj.getName());
+        jLabelSubjectProfessor.setText(prof.toString());
+        jLabelSubjectProfessor.setToolTipText(prof.toString());
         DefaultTableModel model = (DefaultTableModel) jTableSubjectList.getModel();
+        model.setRowCount(0);
+
         int count = 0;
-
         for (User u : userManager.list) {
-            if (u instanceof Student) {
-                Student s = (Student) u;
-                AcademicData academic = s.getAcademicData();
+            if (!(u instanceof Student))
+                continue;
 
-                if (!academic.subjects.contains(id))
-                    continue;
+            Student s = (Student) u;
+            AcademicData academic = s.getAcademicData();
 
-                model.insertRow(count++, new Object[] {
-                    s.getUsername(),
-                    s.getLname(),
-                    s.getFname()
-                });
-            }
+            if (!academic.subjects.contains(id))
+                continue;
+
+            model.addRow(new Object[] {
+                s.getUsername(),
+                s.getLname(),
+                s.getFname()
+            });
+
+            count++;
         }
 
+        double cost = Financial.COST_PER_CREDIT * subj.getCredits();
+        jLabelEnrolls.setText(Integer.toString(count));
+        jLabelProfit.setText("$" + Double.toString(cost * count));
+        jLabelCredits.setText(Integer.toString(subj.getCredits()));
+        jLabelCost.setText("$" + Double.toString(cost));
         JOptionPane.showMessageDialog(null, "Búsqueda finalizada, se encontraron " + count + " registros", "Ecosystem", JOptionPane.INFORMATION_MESSAGE);
     }//GEN-LAST:event_jButtonFindActionPerformed
 
@@ -1041,6 +1194,19 @@ public class AdminFrame extends EcosystemFrame {
             removeSelectedProfessors();
     }//GEN-LAST:event_jTableProfessorsKeyPressed
 
+    private void jMenuItemSubjectReportActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItemSubjectReportActionPerformed
+        int index = subjectsSelModel.getMinSelectionIndex();
+        if (index == -1) {
+            JOptionPane.showMessageDialog(null, "Seleccione una materia para continuar", "Ecosystem", JOptionPane.INFORMATION_MESSAGE);
+            return;
+        }
+
+        subjectsSelModel.setSelectionInterval(index, index);
+        jTextFieldSubjectId.setText((String) jTableSubjects.getValueAt(index, 0));
+        jButtonFind.doClick();
+        menu.toggleMenuItem(1);
+    }//GEN-LAST:event_jMenuItemSubjectReportActionPerformed
+
     public static void main(String args[]) {
         java.awt.EventQueue.invokeLater(() -> {
             new AdminFrame().setVisible(true);
@@ -1055,7 +1221,13 @@ public class AdminFrame extends EcosystemFrame {
     private javax.swing.JLabel jLabePicture;
     private javax.swing.JLabel jLabelAddress;
     private javax.swing.JLabel jLabelAttachment;
+    private javax.swing.JLabel jLabelCost;
+    private javax.swing.JLabel jLabelCostStatic;
+    private javax.swing.JLabel jLabelCredits;
+    private javax.swing.JLabel jLabelCreditsStatic;
     private javax.swing.JLabel jLabelEmail;
+    private javax.swing.JLabel jLabelEnrolls;
+    private javax.swing.JLabel jLabelEnrollsStatic;
     private javax.swing.JLabel jLabelFname;
     private javax.swing.JLabel jLabelId;
     private javax.swing.JLabel jLabelLname;
@@ -1068,6 +1240,8 @@ public class AdminFrame extends EcosystemFrame {
     private javax.swing.JLabel jLabelPhone;
     private javax.swing.JLabel jLabelProfessorStatic;
     private javax.swing.JLabel jLabelProfile;
+    private javax.swing.JLabel jLabelProfit;
+    private javax.swing.JLabel jLabelProfitStatic;
     private javax.swing.JLabel jLabelRequired;
     private javax.swing.JLabel jLabelState;
     private javax.swing.JLabel jLabelSubjectIdStatic;
@@ -1080,7 +1254,14 @@ public class AdminFrame extends EcosystemFrame {
     private javax.swing.JMenuItem jMenuItemAddSubject;
     private javax.swing.JMenuItem jMenuItemDeleteProfessors;
     private javax.swing.JMenuItem jMenuItemDeleteSubjects;
+    private javax.swing.JMenuItem jMenuItemSubjectReport;
     private javax.swing.JMenu jMenuOptions;
+    private javax.swing.JMenu jMenuReport;
+    private javax.swing.JPanel jPanelBadge;
+    private javax.swing.JPanel jPanelCost;
+    private javax.swing.JPanel jPanelCredits;
+    private javax.swing.JPanel jPanelEnrollsCount;
+    private javax.swing.JPanel jPanelFinancial;
     private javax.swing.JPanel jPanelFind;
     private javax.swing.JPanel jPanelFindOpt;
     private javax.swing.JPanel jPanelLeft;
@@ -1088,12 +1269,16 @@ public class AdminFrame extends EcosystemFrame {
     private javax.swing.JPanel jPanelMain;
     private javax.swing.JPanel jPanelMenu;
     private javax.swing.JPanel jPanelMenuBarContainer;
+    private javax.swing.JPanel jPanelProfit;
     private javax.swing.JPanel jPanelProgramme;
     private javax.swing.JPanel jPanelProgrammeOpt;
     private javax.swing.JPanel jPanelRegister;
     private javax.swing.JPanel jPanelRegisterOpt;
     private javax.swing.JPanel jPanelRequests;
     private javax.swing.JPanel jPanelRequestsOpt;
+    private javax.swing.JPanel jPanelResult;
+    private javax.swing.JPanel jPanelRow1;
+    private javax.swing.JPanel jPanelRow2;
     private javax.swing.JPanel jPanelTables;
     private javax.swing.JScrollPane jScrollPaneAddress;
     private javax.swing.JScrollPane jScrollPaneList;

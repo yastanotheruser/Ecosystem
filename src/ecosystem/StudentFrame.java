@@ -57,7 +57,7 @@ public class StudentFrame extends EcosystemFrame {
         }
 
         initManagement();
-        loadPayments();
+        updatePayments();
         setVisible(true);
     }
 
@@ -160,7 +160,7 @@ public class StudentFrame extends EcosystemFrame {
         updateManagePanel();
     }
 
-    private void loadPayments() {
+    private void updatePayments() {
         if (stud == null)
             return;
 
@@ -168,6 +168,7 @@ public class StudentFrame extends EcosystemFrame {
         jLabelEnrollmentCost.setText(String.valueOf(Financial.ENROLLMENT_COST));
         jLabelCreditCost.setText(String.valueOf(Financial.COST_PER_CREDIT));
         DefaultTableModel costsModel = (DefaultTableModel) jTableCosts.getModel();
+        costsModel.setRowCount(0);
 
         for (String sid : academic.subjects) {
             Subject s = subjectManager.get(sid);
@@ -258,7 +259,7 @@ public class StudentFrame extends EcosystemFrame {
             updateCancelPanel();
 
         jLabelCreditsInfo.setVisible(credits < 4 || credits >= 16 && stud.getState() == AcademicState.BEFORE_ENROLL);
-        if (credits == 0)
+        if (credits < 4)
             jLabelCreditsInfo.setText("Debe matricularse como mínimo 4 créditos");
         else if (credits >= 16 && stud.getState() == AcademicState.BEFORE_ENROLL)
             jLabelCreditsInfo.setText("Debe matricularse como máximo 16 créditos");
@@ -1051,6 +1052,7 @@ public class StudentFrame extends EcosystemFrame {
         academic.execTransaction(new Transaction(stud.getUsername(), added, TransactionType.ENROLLMENT));
         stud.setState(AcademicState.ENROLLED);
         clearManagement();
+        updatePayments();
     }//GEN-LAST:event_jButtonEnrollActionPerformed
 
     private void jButtonCancelActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonCancelActionPerformed
@@ -1065,6 +1067,7 @@ public class StudentFrame extends EcosystemFrame {
         academic.execTransaction(new Transaction(stud.getUsername(), cancelled, TransactionType.CANCELLATION));
         stud.setState(AcademicState.SEEMS_THEY_WENT_THROUGH_ALL_THAT_STUFF_ALREADY);
         clearManagement();
+        updatePayments();
     }//GEN-LAST:event_jButtonCancelActionPerformed
 
     public static void main(String args[]) {

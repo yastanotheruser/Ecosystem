@@ -5,6 +5,7 @@
 import static ecosystem.Ecosystem.*;
 import ecosystem.academic.Professor;
 import ecosystem.academic.Subject;
+import static ecosystem.mailing.SimpleMailApp.emailManager;
 import ecosystem.user.*;
 import javax.swing.ImageIcon;
 
@@ -50,7 +51,7 @@ public class Default {
         { "1008", "Ecoempresas: Emprendimiento y naturaleza", "95547", 3 },
         { "1009", "Diseño e implementación de proyectos ecológicos", "56130", 3 },
         { "1010", "Reglamentación ambiental en Colombia", "56130", 4 },
-        { "1011", "Etica profesional, conciencia y biología", "10101",   4 }
+        { "1011", "Etica profesional, conciencia y biología", "10101", 4 }
     };
 
     public static void main(String[] args) {
@@ -72,4 +73,3 @@ public class Default {
         professorManager.update();
     }
 }
-    
