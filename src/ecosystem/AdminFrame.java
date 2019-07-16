@@ -10,11 +10,13 @@ import ecosystem.components.*;
 import ecosystem.dialogs.AddProfessorDialog;
 import ecosystem.dialogs.PictureDialog;
 import ecosystem.event.MouseClickedListener;
+import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Font;
 import java.awt.event.MouseEvent;
 import java.io.File;
 import java.util.ArrayList;
+import javax.swing.BoxLayout;
 import javax.swing.ImageIcon;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
@@ -47,6 +49,7 @@ public class AdminFrame extends EcosystemFrame {
         students = new ArrayList<>();
         applicants = new ArrayList<>();
         initComponents();
+        jPanelMenuBarContainer.add(jMenuBar);
         initTableModels();
         initMenu();
         initValidationData();
@@ -130,7 +133,8 @@ public class AdminFrame extends EcosystemFrame {
     }
 
     private void updateBadge() {
-        int requestCount = (int) meta.getItem("requestsCount");
+        Object requestCountObj = meta.getItem("requestsCount");
+        int requestCount = (requestCountObj != null) ? (int) requestCountObj : 0;
         badge.setText(String.valueOf(requestCount));
         badge.setVisible(requestCount > 0);
     }
@@ -409,7 +413,6 @@ public class AdminFrame extends EcosystemFrame {
         jTableRequests = new javax.swing.JTable();
         jPanelProgramme = new javax.swing.JPanel();
         jPanelMenuBarContainer = new javax.swing.JPanel();
-        jPanelMenuBarContainer.add(jMenuBar);
         jPanelTables = new javax.swing.JPanel();
         jScrollPaneSubjects = new javax.swing.JScrollPane();
         jTableSubjects = new javax.swing.JTable();
@@ -421,6 +424,7 @@ public class AdminFrame extends EcosystemFrame {
         jMenuBar.setBackground(new java.awt.Color(58, 155, 83));
         jMenuBar.setBorder(javax.swing.BorderFactory.createEmptyBorder(1, 5, 1, 1));
 
+        jMenuAdd.setLayout(new BoxLayout(jMenuAdd, BoxLayout.PAGE_AXIS));
         jMenuAdd.setForeground(new java.awt.Color(240, 240, 240));
         jMenuAdd.setText("Añadir");
 
