@@ -3,6 +3,7 @@ package ecosystem.mailing;
 import ecosystem.event.MouseClickedListener;
 import java.awt.Container;
 import java.awt.GridLayout;
+import java.awt.Toolkit;
 import java.awt.event.MouseEvent;
 import java.util.Random;
 import javax.swing.JDialog;
@@ -14,6 +15,7 @@ import javax.swing.ListSelectionModel;
 import javax.swing.table.DefaultTableModel;
 
 public class SimpleMailApp extends JFrame {
+    public static EmailManager emailManager = new EmailManager("mailing");
     private static class EmailContentDialog extends JDialog {
         public EmailContentDialog(JFrame parent, Email email) {
             super(parent, true);
@@ -30,13 +32,12 @@ public class SimpleMailApp extends JFrame {
         }
     }
 
-    public static EmailManager emailManager = new EmailManager("mailing");
-
     private DefaultTableModel model;
     private JTable jTableEmailList;
     private final Container container;
 
     public SimpleMailApp() {
+        this.setIconImage(Toolkit.getDefaultToolkit().getImage(getClass().getResource("/images/ecosystem.png")));
         setBounds(100, 100, 500, 400);
         container = this.getContentPane();
         initComponents();

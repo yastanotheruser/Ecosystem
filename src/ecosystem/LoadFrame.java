@@ -55,7 +55,7 @@ public class LoadFrame extends EcosystemFrame {
         jLabelEcosystem.setBackground(new java.awt.Color(44, 130, 201));
         jLabelEcosystem.setFont(new java.awt.Font("Trebuchet MS", 1, 48)); // NOI18N
         jLabelEcosystem.setForeground(new java.awt.Color(44, 201, 130));
-        jLabelEcosystem.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Images/passed-exam.png"))); // NOI18N
+        jLabelEcosystem.setIcon(new javax.swing.ImageIcon(getClass().getResource("/images/passed-exam.png"))); // NOI18N
         jLabelEcosystem.setText("EcoSystem");
         jLabelEcosystem.setToolTipText("");
         jPanelMain.add(jLabelEcosystem, new org.netbeans.lib.awtextra.AbsoluteConstraints(234, 140, -1, -1));

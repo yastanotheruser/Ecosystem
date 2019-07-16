@@ -12,6 +12,7 @@ public class Ecosystem {
     public static final ProfessorManager professorManager = new ProfessorManager("professors");
     public static final MetaManager meta = new MetaManager("ecosystem");
     public static final FileChooser imageChooser = new FileChooser(null, "Imágenes", "jpg", "png", "gif");
+    public static final FileChooser pdfChooser = new FileChooser(null, "Archivo PDF", "pdf");
 
     public static void initDataManagers() {
         userManager.init();
@@ -21,8 +22,9 @@ public class Ecosystem {
     }
 
     public static void main(String[] args) throws IOException {
+        System.out.println(System.getProperty("user.dir"));
         initDataManagers();
         new SimpleMailApp();
-        new LoadFrame();
+        LoadFrame frame = new LoadFrame();
     }
 }

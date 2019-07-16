@@ -171,20 +171,20 @@ public class SigninFrame extends EcosystemFrame {
         jPanelMain.setForeground(new java.awt.Color(255, 255, 255));
         jPanelMain.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
 
-        jLabelIcon.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Images/check.png"))); // NOI18N
+        jLabelIcon.setIcon(new javax.swing.ImageIcon(getClass().getResource("/images/check.png"))); // NOI18N
         jPanelMain.add(jLabelIcon, new org.netbeans.lib.awtextra.AbsoluteConstraints(178, 60, -1, -1));
 
-        jButtonIcon.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Images/letter.png"))); // NOI18N
+        jButtonIcon.setIcon(new javax.swing.ImageIcon(getClass().getResource("/images/letter.png"))); // NOI18N
         jButtonIcon.setToolTipText("Email");
         jButtonIcon.setBorder(null);
         jButtonIcon.setBorderPainted(false);
         jButtonIcon.setContentAreaFilled(false);
-        jButtonIcon.setRolloverIcon(new javax.swing.ImageIcon(getClass().getResource("/Images/letter-active.png"))); // NOI18N
+        jButtonIcon.setRolloverIcon(new javax.swing.ImageIcon(getClass().getResource("/images/letter-active.png"))); // NOI18N
         jPanelMain.add(jButtonIcon, new org.netbeans.lib.awtextra.AbsoluteConstraints(50, 20, -1, 28));
 
         jLabelUserIcon.setFont(new java.awt.Font("Trebuchet MS", 1, 36)); // NOI18N
         jLabelUserIcon.setForeground(new java.awt.Color(44, 130, 201));
-        jLabelUserIcon.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Images/profile.png"))); // NOI18N
+        jLabelUserIcon.setIcon(new javax.swing.ImageIcon(getClass().getResource("/images/profile.png"))); // NOI18N
         jPanelMain.add(jLabelUserIcon, new org.netbeans.lib.awtextra.AbsoluteConstraints(58, 203, -1, 45));
 
         jLabelUser.setFont(new java.awt.Font("Verdana", 0, 14)); // NOI18N
@@ -207,7 +207,7 @@ public class SigninFrame extends EcosystemFrame {
 
         jLabelLockIcon.setFont(new java.awt.Font("Trebuchet MS", 1, 36)); // NOI18N
         jLabelLockIcon.setForeground(new java.awt.Color(169, 224, 49));
-        jLabelLockIcon.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Images/padlock.png"))); // NOI18N
+        jLabelLockIcon.setIcon(new javax.swing.ImageIcon(getClass().getResource("/images/padlock.png"))); // NOI18N
         jPanelMain.add(jLabelLockIcon, new org.netbeans.lib.awtextra.AbsoluteConstraints(58, 300, -1, 45));
 
         jLabelPassword.setFont(new java.awt.Font("Verdana", 0, 14)); // NOI18N
@@ -280,7 +280,7 @@ public class SigninFrame extends EcosystemFrame {
 
         jLabelRightLogo1.setFont(new java.awt.Font("Trebuchet MS", 1, 36)); // NOI18N
         jLabelRightLogo1.setForeground(new java.awt.Color(44, 201, 130));
-        jLabelRightLogo1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Images/passed-exam.png"))); // NOI18N
+        jLabelRightLogo1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/images/passed-exam.png"))); // NOI18N
         jLabelRightLogo1.setText("EcoSystem");
         jPanelSignup.add(jLabelRightLogo1, new org.netbeans.lib.awtextra.AbsoluteConstraints(87, 10, -1, -1));
 
@@ -371,7 +371,7 @@ public class SigninFrame extends EcosystemFrame {
         jButtonSignupClose.setBackground(new java.awt.Color(44, 130, 201));
         jButtonSignupClose.setFont(new java.awt.Font("Trebuchet MS", 1, 18)); // NOI18N
         jButtonSignupClose.setForeground(new java.awt.Color(44, 201, 130));
-        jButtonSignupClose.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Images/back.png"))); // NOI18N
+        jButtonSignupClose.setIcon(new javax.swing.ImageIcon(getClass().getResource("/images/back.png"))); // NOI18N
         jButtonSignupClose.setText("Salir");
         jButtonSignupClose.setBorder(null);
         jButtonSignupClose.setContentAreaFilled(false);
@@ -394,7 +394,7 @@ public class SigninFrame extends EcosystemFrame {
 
         jLabelRightLogo2.setFont(new java.awt.Font("Trebuchet MS", 1, 36)); // NOI18N
         jLabelRightLogo2.setForeground(new java.awt.Color(44, 201, 130));
-        jLabelRightLogo2.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Images/passed-exam.png"))); // NOI18N
+        jLabelRightLogo2.setIcon(new javax.swing.ImageIcon(getClass().getResource("/images/passed-exam.png"))); // NOI18N
         jLabelRightLogo2.setText("EcoSystem");
         jPanelForgotPwd.add(jLabelRightLogo2, new org.netbeans.lib.awtextra.AbsoluteConstraints(87, 60, -1, -1));
 
@@ -433,7 +433,7 @@ public class SigninFrame extends EcosystemFrame {
         jButtonForgotPwdClose.setBackground(new java.awt.Color(44, 130, 201));
         jButtonForgotPwdClose.setFont(new java.awt.Font("Trebuchet MS", 1, 18)); // NOI18N
         jButtonForgotPwdClose.setForeground(new java.awt.Color(44, 201, 130));
-        jButtonForgotPwdClose.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Images/back.png"))); // NOI18N
+        jButtonForgotPwdClose.setIcon(new javax.swing.ImageIcon(getClass().getResource("/images/back.png"))); // NOI18N
         jButtonForgotPwdClose.setText("Salir");
         jButtonForgotPwdClose.setBorder(null);
         jButtonForgotPwdClose.setContentAreaFilled(false);
@@ -456,7 +456,7 @@ public class SigninFrame extends EcosystemFrame {
 
         jLabelTrademark.setFont(new java.awt.Font("Trebuchet MS", 1, 36)); // NOI18N
         jLabelTrademark.setForeground(new java.awt.Color(44, 201, 130));
-        jLabelTrademark.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Images/passed-exam.png"))); // NOI18N
+        jLabelTrademark.setIcon(new javax.swing.ImageIcon(getClass().getResource("/images/passed-exam.png"))); // NOI18N
         jLabelTrademark.setText("EcoSystem");
         jPanelTrademark.add(jLabelTrademark, new org.netbeans.lib.awtextra.AbsoluteConstraints(86, 200, -1, -1));
 

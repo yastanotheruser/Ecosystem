@@ -7,9 +7,11 @@ public class SubjectManager extends DataManager<Subject> {
         super(filename);
     }
 
-    public void updateProfessor(String newId) {
-        for (Subject s : list)
-            s.setProfessorId(newId);
+    public void updateProfessor(String initialId, String newId) {
+        for (Subject s : list) {
+            if (s.getProfessorId().equals(initialId))
+                s.setProfessorId(newId);
+        }
 
         update();
     }

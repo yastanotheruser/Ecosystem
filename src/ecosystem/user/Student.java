@@ -30,7 +30,7 @@ public class Student extends User implements Serializable {
         this.email = email;
         this.address = address;
         this.picture = picture;
-        this.academic = new AcademicData();
+        this.academic = new AcademicData(id);
         this.state = AcademicState.BEFORE_ENROLL;
         this.payment = 0;
     }
@@ -120,5 +120,14 @@ public class Student extends User implements Serializable {
 
     public void setPayment(double payment) {
         this.payment = payment;
+    }
+
+    public void updateSubject(String initialId, String newId) {
+        academic.updateSubject(initialId, newId);
+    }
+
+    @Override
+    public String toString() {
+        return lname + " " + fname;
     }
 }

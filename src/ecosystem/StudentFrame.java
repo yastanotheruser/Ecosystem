@@ -4,15 +4,20 @@ import static ecosystem.Ecosystem.*;
 import ecosystem.academic.*;
 import ecosystem.components.*;
 import ecosystem.event.MouseClickedListener;
+import ecosystem.pdf.ReportBuilder;
 import ecosystem.user.*;
 import ecosystem.util.FormValidator;
 import ecosystem.util.ImageUtil;
 import ecosystem.util.RegexValidator;
 import java.awt.Color;
+import java.awt.Desktop;
 import java.awt.event.MouseEvent;
 import java.io.File;
+import java.io.IOException;
 import static java.lang.Integer.min;
 import java.util.ArrayList;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.ImageIcon;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
@@ -178,6 +183,8 @@ public class StudentFrame extends EcosystemFrame {
         }
 
         jLabelTotal.setText(String.valueOf(total));
+        stud.setPayment(total);
+        userManager.update();
     }
 
     private void loadEnrollData() {
@@ -296,11 +303,11 @@ public class StudentFrame extends EcosystemFrame {
         Subject s = getSubject(subjIndex);
         Professor prof = professorManager.get(s.getProfessorId());
         manageTableModel.addRow(new Object[] { s.getId(), s, prof, s.getCredits() });
-        
+
         java.awt.EventQueue.invokeLater(() -> {
             jComboBoxSubjects.removeItemAt(itemIndex);
         });
-        
+
         subjectIndices.add(subjIndex);
         int subjCredits = s.getCredits();
         if (stud.getState() == AcademicState.BEFORE_ENROLL)
@@ -402,6 +409,7 @@ public class StudentFrame extends EcosystemFrame {
         jPanelCostToPay = new javax.swing.JPanel();
         jLabelTotalStatic = new javax.swing.JLabel();
         jLabelTotal = new javax.swing.JLabel();
+        jButtonSaveReport = new javax.swing.JButton();
         jScrollPaneCosts = new javax.swing.JScrollPane();
         jTableCosts = new javax.swing.JTable();
         jPanelVerify = new javax.swing.JPanel();
@@ -438,12 +446,13 @@ public class StudentFrame extends EcosystemFrame {
         jLabelTrademark.setFont(new java.awt.Font("Trebuchet MS", 1, 18)); // NOI18N
         jLabelTrademark.setForeground(new java.awt.Color(44, 201, 130));
         jLabelTrademark.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        jLabelTrademark.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Images/ecosystem-small.png"))); // NOI18N
+        jLabelTrademark.setIcon(new javax.swing.ImageIcon(getClass().getResource("/images/ecosystem-small.png"))); // NOI18N
         jLabelTrademark.setText("EcoSystem");
         jLabelTrademark.setIconTextGap(8);
         jPanelLeft.add(jLabelTrademark, new org.netbeans.lib.awtextra.AbsoluteConstraints(52, 25, -1, -1));
 
         jLabelPicture.setForeground(new java.awt.Color(240, 240, 240));
+        jLabelPicture.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         jLabelPicture.setPreferredSize(new java.awt.Dimension(230, 230));
         jPanelLeft.add(jLabelPicture, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 330, -1, -1));
 
@@ -458,7 +467,7 @@ public class StudentFrame extends EcosystemFrame {
         jLabelOpt1.setFont(new java.awt.Font("Trebuchet MS", 1, 14)); // NOI18N
         jLabelOpt1.setForeground(new java.awt.Color(255, 255, 255));
         jLabelOpt1.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
-        jLabelOpt1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Images/report-card.png"))); // NOI18N
+        jLabelOpt1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/images/report-card.png"))); // NOI18N
         jLabelOpt1.setText("Reporte de matrícula");
         jLabelOpt1.setRequestFocusEnabled(false);
         jPanelReportOpt.add(jLabelOpt1);
@@ -473,7 +482,7 @@ public class StudentFrame extends EcosystemFrame {
         jLabelOpt2.setFont(new java.awt.Font("Trebuchet MS", 1, 14)); // NOI18N
         jLabelOpt2.setForeground(new java.awt.Color(255, 255, 255));
         jLabelOpt2.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
-        jLabelOpt2.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Images/manage.png"))); // NOI18N
+        jLabelOpt2.setIcon(new javax.swing.ImageIcon(getClass().getResource("/images/manage.png"))); // NOI18N
         jLabelOpt2.setText("Gestión de matrícula");
         jLabelOpt2.setRequestFocusEnabled(false);
         jPanelManageOpt.add(jLabelOpt2);
@@ -488,7 +497,7 @@ public class StudentFrame extends EcosystemFrame {
         jLabelOpt3.setFont(new java.awt.Font("Trebuchet MS", 1, 14)); // NOI18N
         jLabelOpt3.setForeground(new java.awt.Color(255, 255, 255));
         jLabelOpt3.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
-        jLabelOpt3.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Images/payments.png"))); // NOI18N
+        jLabelOpt3.setIcon(new javax.swing.ImageIcon(getClass().getResource("/images/payments.png"))); // NOI18N
         jLabelOpt3.setText("Reporte de pago");
         jLabelOpt3.setRequestFocusEnabled(false);
         jPanelPaymentOpt.add(jLabelOpt3);
@@ -503,7 +512,7 @@ public class StudentFrame extends EcosystemFrame {
         jLabelOpt4.setFont(new java.awt.Font("Trebuchet MS", 1, 14)); // NOI18N
         jLabelOpt4.setForeground(new java.awt.Color(255, 255, 255));
         jLabelOpt4.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
-        jLabelOpt4.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Images/user-icon.png"))); // NOI18N
+        jLabelOpt4.setIcon(new javax.swing.ImageIcon(getClass().getResource("/images/user-icon.png"))); // NOI18N
         jLabelOpt4.setText("Verificación");
         jLabelOpt4.setRequestFocusEnabled(false);
         jPanelVerifyOpt.add(jLabelOpt4);
@@ -523,7 +532,7 @@ public class StudentFrame extends EcosystemFrame {
         jLabelOpt5.setFont(new java.awt.Font("Trebuchet MS", 1, 14)); // NOI18N
         jLabelOpt5.setForeground(new java.awt.Color(255, 255, 255));
         jLabelOpt5.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
-        jLabelOpt5.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Images/back-white.png"))); // NOI18N
+        jLabelOpt5.setIcon(new javax.swing.ImageIcon(getClass().getResource("/images/back-white.png"))); // NOI18N
         jLabelOpt5.setText("Cerrar sesión");
         jLabelOpt5.setRequestFocusEnabled(false);
         jPanelLogoutOpt1.add(jLabelOpt5);
@@ -779,50 +788,74 @@ public class StudentFrame extends EcosystemFrame {
 
         jPanelMain.add(jPanelManage, new org.netbeans.lib.awtextra.AbsoluteConstraints(230, 80, -1, -1));
 
+        jPanelPayment.setBackground(new java.awt.Color(58, 155, 83));
         jPanelPayment.setPreferredSize(new java.awt.Dimension(670, 520));
         jPanelPayment.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
 
-        jPanelPricing.setPreferredSize(new java.awt.Dimension(610, 100));
+        jPanelPricing.setOpaque(false);
+        jPanelPricing.setPreferredSize(new java.awt.Dimension(610, 80));
         jPanelPricing.setLayout(new java.awt.GridLayout(3, 0, 0, 10));
 
+        jPanelEnrollmentCost.setOpaque(false);
         jPanelEnrollmentCost.setLayout(new javax.swing.BoxLayout(jPanelEnrollmentCost, javax.swing.BoxLayout.LINE_AXIS));
 
         jLabelEnrollmentCostStatic.setFont(new java.awt.Font("Consolas", 0, 18)); // NOI18N
+        jLabelEnrollmentCostStatic.setForeground(new java.awt.Color(240, 240, 240));
         jLabelEnrollmentCostStatic.setText("Costo de matrícula por ingreso: $");
         jPanelEnrollmentCost.add(jLabelEnrollmentCostStatic);
 
         jLabelEnrollmentCost.setFont(new java.awt.Font("Consolas", 1, 18)); // NOI18N
+        jLabelEnrollmentCost.setForeground(new java.awt.Color(240, 240, 240));
         jPanelEnrollmentCost.add(jLabelEnrollmentCost);
 
         jPanelPricing.add(jPanelEnrollmentCost);
 
+        jPanelCreditCost.setOpaque(false);
         jPanelCreditCost.setLayout(new javax.swing.BoxLayout(jPanelCreditCost, javax.swing.BoxLayout.LINE_AXIS));
 
         jLabelCreditCostStatic.setFont(new java.awt.Font("Consolas", 0, 18)); // NOI18N
+        jLabelCreditCostStatic.setForeground(new java.awt.Color(240, 240, 240));
         jLabelCreditCostStatic.setText("Costo de matrícula por crédito: $");
         jPanelCreditCost.add(jLabelCreditCostStatic);
         jLabelCreditCostStatic.getAccessibleContext().setAccessibleName("");
 
         jLabelCreditCost.setFont(new java.awt.Font("Consolas", 1, 18)); // NOI18N
+        jLabelCreditCost.setForeground(new java.awt.Color(240, 240, 240));
         jPanelCreditCost.add(jLabelCreditCost);
 
         jPanelPricing.add(jPanelCreditCost);
 
+        jPanelCostToPay.setOpaque(false);
         jPanelCostToPay.setLayout(new javax.swing.BoxLayout(jPanelCostToPay, javax.swing.BoxLayout.LINE_AXIS));
 
         jLabelTotalStatic.setFont(new java.awt.Font("Consolas", 0, 18)); // NOI18N
+        jLabelTotalStatic.setForeground(new java.awt.Color(240, 240, 240));
         jLabelTotalStatic.setText("Costo total a pagar: $");
         jPanelCostToPay.add(jLabelTotalStatic);
 
         jLabelTotal.setFont(new java.awt.Font("Consolas", 1, 18)); // NOI18N
+        jLabelTotal.setForeground(new java.awt.Color(240, 240, 240));
         jPanelCostToPay.add(jLabelTotal);
 
         jPanelPricing.add(jPanelCostToPay);
 
-        jPanelPayment.add(jPanelPricing, new org.netbeans.lib.awtextra.AbsoluteConstraints(30, 30, -1, -1));
+        jPanelPayment.add(jPanelPricing, new org.netbeans.lib.awtextra.AbsoluteConstraints(30, 35, -1, -1));
+
+        jButtonSaveReport.setFont(new java.awt.Font("Trebuchet MS", 0, 14)); // NOI18N
+        jButtonSaveReport.setText("Guardar reporte");
+        jButtonSaveReport.setBorder(javax.swing.BorderFactory.createEtchedBorder());
+        jButtonSaveReport.setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
+        jButtonSaveReport.setFocusPainted(false);
+        jButtonSaveReport.setPreferredSize(new java.awt.Dimension(150, 32));
+        jButtonSaveReport.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButtonSaveReportActionPerformed(evt);
+            }
+        });
+        jPanelPayment.add(jButtonSaveReport, new org.netbeans.lib.awtextra.AbsoluteConstraints(260, 450, -1, -1));
 
         jScrollPaneCosts.setBorder(javax.swing.BorderFactory.createTitledBorder(javax.swing.BorderFactory.createCompoundBorder(new javax.swing.border.LineBorder(new java.awt.Color(200, 200, 200), 2, true), null), "Valor a pagar por materias", javax.swing.border.TitledBorder.CENTER, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Trebuchet MS", 0, 11))); // NOI18N
-        jScrollPaneCosts.setPreferredSize(new java.awt.Dimension(610, 320));
+        jScrollPaneCosts.setPreferredSize(new java.awt.Dimension(610, 280));
 
         jTableCosts.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
@@ -887,6 +920,7 @@ public class StudentFrame extends EcosystemFrame {
         });
         jPanelIdentity.add(jButtonSend, new org.netbeans.lib.awtextra.AbsoluteConstraints(477, 42, 100, 32));
 
+        jLabelDocument.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         jLabelDocument.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(34, 49, 63)));
         jLabelDocument.setOpaque(true);
         jPanelIdentity.add(jLabelDocument, new org.netbeans.lib.awtextra.AbsoluteConstraints(190, 110, 290, 360));
@@ -934,6 +968,7 @@ public class StudentFrame extends EcosystemFrame {
 
         jLabelProfile.setBackground(new java.awt.Color(231, 231, 231));
         jLabelProfile.setForeground(new java.awt.Color(240, 240, 240));
+        jLabelProfile.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         jLabelProfile.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(34, 49, 63)));
         jLabelProfile.setOpaque(true);
         jPanelSubmit.add(jLabelProfile, new org.netbeans.lib.awtextra.AbsoluteConstraints(165, 260, 120, 150));
@@ -1010,7 +1045,7 @@ public class StudentFrame extends EcosystemFrame {
         if (file == null)
             return;
 
-        choosenImage = ImageUtil.resizeImage(file.getAbsolutePath(), jLabelProfile);
+        choosenImage = new ImageIcon(file.getAbsolutePath());
         jLabelProfile.setIcon(choosenImage);
     }//GEN-LAST:event_jButtonBrowseProfileActionPerformed
 
@@ -1052,6 +1087,8 @@ public class StudentFrame extends EcosystemFrame {
         academic.execTransaction(new Transaction(stud.getUsername(), added, TransactionType.ENROLLMENT));
         stud.setState(AcademicState.ENROLLED);
         clearManagement();
+        userManager.update();
+        subjectManager.update();
         updatePayments();
     }//GEN-LAST:event_jButtonEnrollActionPerformed
 
@@ -1068,7 +1105,29 @@ public class StudentFrame extends EcosystemFrame {
         stud.setState(AcademicState.SEEMS_THEY_WENT_THROUGH_ALL_THAT_STUFF_ALREADY);
         clearManagement();
         updatePayments();
+        userManager.update();
+        subjectManager.update();
     }//GEN-LAST:event_jButtonCancelActionPerformed
+
+    private void jButtonSaveReportActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonSaveReportActionPerformed
+        try {
+            File file = pdfChooser.chooseFile();
+            if (file == null)
+                return;
+
+            if (!file.toString().endsWith(".pdf"))
+                file = new File(file + ".pdf");
+            
+            ReportBuilder.buildPaymentReport(academic, file);
+            if (JOptionPane.showConfirmDialog(null, "¿Desea abrir el archivo?", "Ecosystem", JOptionPane.INFORMATION_MESSAGE) != JOptionPane.OK_OPTION)
+                return;
+
+            Desktop desktop = Desktop.getDesktop();
+            desktop.open(file);
+        } catch (IOException ex) {
+            Logger.getLogger(StudentFrame.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }//GEN-LAST:event_jButtonSaveReportActionPerformed
 
     public static void main(String args[]) {
         java.awt.EventQueue.invokeLater(() -> {
@@ -1084,6 +1143,7 @@ public class StudentFrame extends EcosystemFrame {
     private javax.swing.JButton jButtonEnroll;
     private javax.swing.JButton jButtonRegister;
     private javax.swing.JButton jButtonRemoveSubj;
+    private javax.swing.JButton jButtonSaveReport;
     private javax.swing.JButton jButtonSend;
     private javax.swing.JComboBox<String> jComboBoxSubjects;
     private javax.swing.JLabel jLabePicture;

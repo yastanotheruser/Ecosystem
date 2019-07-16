@@ -52,12 +52,12 @@ public class EcosystemDialog extends JDialog {
 
         setUndecorated(true);
 
-        container.setBackground(new Color(34, 63, 49));
+        container.setBackground(new Color(58, 155, 83));
         container.setPreferredSize(new Dimension(width, height));
         container.setLayout(new AbsoluteLayout());
 
-        buttonClose.setIcon(new ImageIcon(getClass().getResource("/Images/exit-white.png")));
-        buttonClose.setRolloverIcon(new ImageIcon(getClass().getResource("/Images/exit-white-active.png")));
+        buttonClose.setIcon(new ImageIcon(getClass().getResource("/images/exit-white.png")));
+        buttonClose.setRolloverIcon(new ImageIcon(getClass().getResource("/images/exit-white-active.png")));
         buttonClose.setToolTipText("Cerrar");
 
         buttonClose.addActionListener((ActionEvent evt) -> {

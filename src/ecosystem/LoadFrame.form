@@ -63,7 +63,7 @@
               <Color blue="82" green="c9" red="2c" type="rgb"/>
             </Property>
             <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
-              <Image iconType="3" name="/Images/passed-exam.png"/>
+              <Image iconType="3" name="/images/passed-exam.png"/>
             </Property>
             <Property name="text" type="java.lang.String" value="EcoSystem"/>
             <Property name="toolTipText" type="java.lang.String" value=""/>

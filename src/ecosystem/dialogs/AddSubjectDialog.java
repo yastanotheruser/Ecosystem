@@ -4,6 +4,7 @@ import static ecosystem.Ecosystem.*;
 import ecosystem.academic.Professor;
 import ecosystem.academic.Subject;
 import ecosystem.components.EcosystemDialog;
+import ecosystem.user.Student;
 import ecosystem.util.FormValidator;
 import ecosystem.util.RegexValidator;
 import java.awt.Dimension;
@@ -242,9 +243,19 @@ public class AddSubjectDialog extends EcosystemDialog {
         currentSubject.setCredits(Integer.valueOf(jTextFieldCredits.getText()));
         subjectManager.update();
 
-        if (!newId.equals(initialId))
-            professorManager.updateSubject(initialId, newId);
+        for (String studId : currentSubject.getStudents()) {
+            Student s = (Student) userManager.get(studId);
+            s.updateSubject(initialId, newId);
+            System.out.println(s.getAcademicData().subjects);
+        }
 
+        userManager.update();
+        if (newId.equals(initialId)) {
+            this.dispose();
+            return;
+        }
+
+        professorManager.updateSubject(initialId, newId);
         this.dispose();
     }//GEN-LAST:event_jButtonUpdateActionPerformed
 

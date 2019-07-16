@@ -208,7 +208,7 @@ public class AddProfessorDialog extends EcosystemDialog {
         currentProfessor.setLname(jTextFieldLname.getText());
         currentProfessor.setFname(jTextFieldFname.getText());
         professorManager.update();
-        subjectManager.updateProfessor(newId);
+        subjectManager.updateProfessor(initialId, newId);
         this.dispose();
     }//GEN-LAST:event_jButtonUpdateActionPerformed
 

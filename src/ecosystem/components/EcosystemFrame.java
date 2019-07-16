@@ -55,8 +55,8 @@ public class EcosystemFrame extends JFrame {
         container.setPreferredSize(new Dimension(width, height));
         container.setLayout(new AbsoluteLayout());
 
-        buttonMinimize.setIcon(new ImageIcon(getClass().getResource("/Images/minimize.png")));
-        buttonMinimize.setRolloverIcon(new ImageIcon(getClass().getResource("/Images/minimize-active.png")));
+        buttonMinimize.setIcon(new ImageIcon(getClass().getResource("/images/minimize.png")));
+        buttonMinimize.setRolloverIcon(new ImageIcon(getClass().getResource("/images/minimize-active.png")));
         buttonMinimize.setToolTipText("Minimizar");
 
         buttonMinimize.addActionListener((ActionEvent evt) -> {
@@ -65,8 +65,8 @@ public class EcosystemFrame extends JFrame {
 
         container.add(buttonMinimize, new AbsoluteConstraints(width - 85, 5, 40, 40));
 
-        buttonClose.setIcon(new ImageIcon(getClass().getResource("/Images/exit.png")));
-        buttonClose.setRolloverIcon(new ImageIcon(getClass().getResource("/Images/exit-active.png")));
+        buttonClose.setIcon(new ImageIcon(getClass().getResource("/images/exit.png")));
+        buttonClose.setRolloverIcon(new ImageIcon(getClass().getResource("/images/exit-active.png")));
         buttonClose.setToolTipText("Cerrar");
 
         buttonClose.addActionListener((ActionEvent evt) -> {
@@ -133,3 +133,4 @@ public class EcosystemFrame extends JFrame {
         dispatchEvent(new WindowEvent(this, WindowEvent.WINDOW_CLOSING));
     }
 }
+    

@@ -5,7 +5,6 @@
 import static ecosystem.Ecosystem.*;
 import ecosystem.academic.Professor;
 import ecosystem.academic.Subject;
-import static ecosystem.mailing.SimpleMailApp.emailManager;
 import ecosystem.user.*;
 import javax.swing.ImageIcon;
 

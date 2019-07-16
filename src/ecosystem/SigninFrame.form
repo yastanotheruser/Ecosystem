@@ -48,7 +48,7 @@
         <Component class="javax.swing.JLabel" name="jLabelIcon">
           <Properties>
             <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
-              <Image iconType="3" name="/Images/check.png"/>
+              <Image iconType="3" name="/images/check.png"/>
             </Property>
           </Properties>
           <Constraints>
@@ -60,7 +60,7 @@
         <Component class="javax.swing.JButton" name="jButtonIcon">
           <Properties>
             <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
-              <Image iconType="3" name="/Images/letter.png"/>
+              <Image iconType="3" name="/images/letter.png"/>
             </Property>
             <Property name="toolTipText" type="java.lang.String" value="Email"/>
             <Property name="border" type="javax.swing.border.Border" editor="org.netbeans.modules.form.editors2.BorderEditor">
@@ -69,7 +69,7 @@
             <Property name="borderPainted" type="boolean" value="false"/>
             <Property name="contentAreaFilled" type="boolean" value="false"/>
             <Property name="rolloverIcon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
-              <Image iconType="3" name="/Images/letter-active.png"/>
+              <Image iconType="3" name="/images/letter-active.png"/>
             </Property>
           </Properties>
           <Constraints>
@@ -87,7 +87,7 @@
               <Color blue="c9" green="82" red="2c" type="rgb"/>
             </Property>
             <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
-              <Image iconType="3" name="/Images/profile.png"/>
+              <Image iconType="3" name="/images/profile.png"/>
             </Property>
           </Properties>
           <Constraints>
@@ -153,7 +153,7 @@
               <Color blue="31" green="e0" red="a9" type="rgb"/>
             </Property>
             <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
-              <Image iconType="3" name="/Images/padlock.png"/>
+              <Image iconType="3" name="/images/padlock.png"/>
             </Property>
           </Properties>
           <Constraints>
@@ -332,7 +332,7 @@
                       <Color blue="82" green="c9" red="2c" type="rgb"/>
                     </Property>
                     <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
-                      <Image iconType="3" name="/Images/passed-exam.png"/>
+                      <Image iconType="3" name="/images/passed-exam.png"/>
                     </Property>
                     <Property name="text" type="java.lang.String" value="EcoSystem"/>
                   </Properties>
@@ -624,7 +624,7 @@
                       <Color blue="82" green="c9" red="2c" type="rgb"/>
                     </Property>
                     <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
-                      <Image iconType="3" name="/Images/back.png"/>
+                      <Image iconType="3" name="/images/back.png"/>
                     </Property>
                     <Property name="text" type="java.lang.String" value="Salir"/>
                     <Property name="border" type="javax.swing.border.Border" editor="org.netbeans.modules.form.editors2.BorderEditor">
@@ -677,7 +677,7 @@
                       <Color blue="82" green="c9" red="2c" type="rgb"/>
                     </Property>
                     <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
-                      <Image iconType="3" name="/Images/passed-exam.png"/>
+                      <Image iconType="3" name="/images/passed-exam.png"/>
                     </Property>
                     <Property name="text" type="java.lang.String" value="EcoSystem"/>
                   </Properties>
@@ -789,7 +789,7 @@
                       <Color blue="82" green="c9" red="2c" type="rgb"/>
                     </Property>
                     <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
-                      <Image iconType="3" name="/Images/back.png"/>
+                      <Image iconType="3" name="/images/back.png"/>
                     </Property>
                     <Property name="text" type="java.lang.String" value="Salir"/>
                     <Property name="border" type="javax.swing.border.Border" editor="org.netbeans.modules.form.editors2.BorderEditor">
@@ -842,7 +842,7 @@
                       <Color blue="82" green="c9" red="2c" type="rgb"/>
                     </Property>
                     <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
-                      <Image iconType="3" name="/Images/passed-exam.png"/>
+                      <Image iconType="3" name="/images/passed-exam.png"/>
                     </Property>
                     <Property name="text" type="java.lang.String" value="EcoSystem"/>
                   </Properties>
